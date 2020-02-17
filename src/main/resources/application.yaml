@@ -1,1 +1,4 @@
-
+client:
+  useSandbox: true
+  sandboxToken: 67867dffgdfg
+  exchangeToken: 435345sdfsd32
