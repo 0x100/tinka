@@ -40,7 +40,7 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
         log.debug("URI         : {}", request.getURI());
         log.debug("Method      : {}", request.getMethod());
         log.debug("Headers     : {}", request.getHeaders());
-        log.debug("Request body: \n{}", beautifyBody(content));
+        log.debug("Request body: {}", beautifyBody(content));
     }
 
     private void traceResponse(ClientHttpResponse response) throws IOException {
@@ -50,13 +50,13 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
         log.debug("Status code  : {}", response.getStatusCode());
         log.debug("Status text  : {}", response.getStatusText());
         log.debug("Headers      : {}", response.getHeaders());
-        log.debug("Response body: \n{}", beautifyBody(content));
+        log.debug("Response body: {}", beautifyBody(content));
     }
 
     private String beautifyBody(String content) throws JsonProcessingException {
         if(StringUtils.hasText(content) && isValidJson(content)) {
             Object json = objectMapper.readValue(content, Object.class);
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+            return String.format("\n%s", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json));
         } else {
             return content;
         }
