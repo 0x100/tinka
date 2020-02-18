@@ -21,7 +21,7 @@ client:
 ```
 
 ## Build
-Run `mvnw clean package`
+Run `$ mvnw clean package`
 
 ## API
 After compiling will be available next components (Spring):
@@ -36,4 +36,12 @@ After compiling will be available next components (Spring):
 
 ## Examples
 You can find examples of using the API in the `MarketApiExample` class and in tests.
-To run the `MarketApiExample` use the command `mvnw spring-boot:run` or execute the application from your IDE.
+To run the `MarketApiExample` use the command `$ mvnw spring-boot:run` or execute the application from your IDE.
+
+## How to contribute
+Fork repository, make changes, send me a pull request. I will review your changes and apply them to the master branch shortly, 
+provided they don't violate quality standards. 
+To avoid frustration, before sending me your pull request please run Maven build:
+```
+$ mvnw clean package
+```
