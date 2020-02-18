@@ -6,7 +6,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.threeten.bp.LocalTime;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
 import ru.ilysenko.tinka.model.Ticker;
@@ -31,10 +30,10 @@ public class MarketApiExample {
         Ticker ticker = Ticker.SBERBANK;
 
         OffsetDateTime now = OffsetDateTime.now();
-        OffsetDateTime from = now.with(LocalTime.MIN);
+        OffsetDateTime from = now.minusWeeks(1);
         OffsetDateTime to = now;
         String figi = marketApiHelper.getFigi(ticker);
-        CandleResolution candleResolution = CandleResolution.DAY;
+        CandleResolution candleResolution = CandleResolution.WEEK;
 
         CandlesResponse response = marketApi.marketCandlesGet(figi, from, to, candleResolution);
         Optional.ofNullable(response)
