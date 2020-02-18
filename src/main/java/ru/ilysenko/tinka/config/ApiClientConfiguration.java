@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import ru.tinkoff.invest.client.ApiClient;
 
 @Configuration
-@ComponentScan("ru.tinkoff.invest")
+@ComponentScan({"ru.tinkoff.invest", "ru.ilysenko.tinka"})
 public class ApiClientConfiguration {
 
     public ApiClientConfiguration(ApiClient apiClient, ApiClientProperties properties) {

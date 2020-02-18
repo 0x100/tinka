@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.threeten.bp.OffsetDateTime;
+import ru.ilysenko.tinka.helper.MarketApiHelper;
 import ru.ilysenko.tinka.model.Ticker;
 import ru.tinkoff.invest.api.MarketApi;
 import ru.tinkoff.invest.api.OperationsApi;
@@ -22,9 +23,6 @@ import ru.tinkoff.invest.model.CandlesResponse;
 import ru.tinkoff.invest.model.Currencies;
 import ru.tinkoff.invest.model.CurrencyPosition;
 import ru.tinkoff.invest.model.Empty;
-import ru.tinkoff.invest.model.MarketInstrument;
-import ru.tinkoff.invest.model.MarketInstrumentList;
-import ru.tinkoff.invest.model.MarketInstrumentListResponse;
 import ru.tinkoff.invest.model.Operations;
 import ru.tinkoff.invest.model.OperationsResponse;
 import ru.tinkoff.invest.model.Order;
@@ -36,9 +34,7 @@ import ru.tinkoff.invest.model.UserAccount;
 import ru.tinkoff.invest.model.UserAccounts;
 import ru.tinkoff.invest.model.UserAccountsResponse;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Optional.ofNullable;
 import static org.junit.Assert.assertEquals;
@@ -68,10 +64,13 @@ public class ApiClientTest {
     @Autowired
     private SandboxApi sandboxApi;
 
+    @Autowired
+    private MarketApiHelper marketApiHelper;
+
     @Test
     public void getFigi() {
-        String ticker = Ticker.SBERBANK.getValue();
-        String figi = getFigi(ticker);
+        Ticker ticker = Ticker.SBERBANK;
+        String figi = marketApiHelper.getFigi(ticker);
 
         assertNotNull(figi);
         log.info("Figi for the ticker " + ticker + " is " + figi);
@@ -79,7 +78,7 @@ public class ApiClientTest {
 
     @Test
     public void getCandles() {
-        String figi = getFigi(Ticker.APPLE.getValue());
+        String figi = marketApiHelper.getFigi(Ticker.APPLE);
         CandlesResponse response = marketApi.marketCandlesGet(figi, OffsetDateTime.now().minusDays(10), OffsetDateTime.now(), CandleResolution.DAY);
         assertNotNull(response);
 
@@ -140,7 +139,7 @@ public class ApiClientTest {
     public void getOperations() {
         OffsetDateTime from = OffsetDateTime.now().minusMonths(1);
         OffsetDateTime to = OffsetDateTime.now();
-        String figi = getFigi(Ticker.SBERBANK.getValue());
+        String figi = marketApiHelper.getFigi(Ticker.SBERBANK);
         String brokerAccountId = getBrokerAccountId();
 
         OperationsResponse response = operationsApi.operationsGet(from, to, figi, brokerAccountId);
@@ -166,20 +165,5 @@ public class ApiClientTest {
                 .flatMap(a -> a.stream().findFirst())
                 .orElseThrow(() -> new RuntimeException("User account not found"))
                 .getBrokerAccountId();
-    }
-
-    private String getFigi(String ticker) {
-        return getMarketInstruments(ticker).stream()
-                .filter(instrument -> Objects.equals(ticker, instrument.getTicker()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Ticker not found"))
-                .getFigi();
-    }
-
-    private List<MarketInstrument> getMarketInstruments(String ticker) {
-        return ofNullable(marketApi.marketSearchByTickerGet(ticker))
-                .map(MarketInstrumentListResponse::getPayload)
-                .map(MarketInstrumentList::getInstruments)
-                .orElse(Collections.emptyList());
     }
 }
