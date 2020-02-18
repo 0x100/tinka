@@ -1,13 +1,6 @@
 package ru.ilysenko.tinka;
 
-import io.swagger.client.api.MarketApi;
-import io.swagger.client.model.CandleResolution;
-import io.swagger.client.model.CandlesResponse;
-import io.swagger.client.model.MarketInstrument;
-import io.swagger.client.model.MarketInstrumentList;
-import io.swagger.client.model.MarketInstrumentListResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +8,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.model.Ticker;
+import ru.tinkoff.invest.api.MarketApi;
+import ru.tinkoff.invest.model.Candle;
+import ru.tinkoff.invest.model.CandleResolution;
+import ru.tinkoff.invest.model.Candles;
+import ru.tinkoff.invest.model.CandlesResponse;
+import ru.tinkoff.invest.model.MarketInstrument;
+import ru.tinkoff.invest.model.MarketInstrumentList;
+import ru.tinkoff.invest.model.MarketInstrumentListResponse;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import static java.util.Optional.ofNullable;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 @Slf4j
@@ -41,12 +43,17 @@ public class ApiClientTest {
     }
 
     @Test
-    @Ignore
     public void getCandles() {
         String figi = getFigi(Ticker.APPLE.getValue());
         CandlesResponse response = marketApi.marketCandlesGet(figi, OffsetDateTime.now().minusDays(10), OffsetDateTime.now(), CandleResolution.DAY);
         assertNotNull(response);
-        log.info("payload: " + response.getPayload());
+
+        Candles payload = response.getPayload();
+        assertNotNull(payload);
+
+        List<Candle> candles = payload.getCandles();
+        assertNotNull(candles);
+        assertFalse(candles.isEmpty());
     }
 
     private String getFigi(String ticker) {
