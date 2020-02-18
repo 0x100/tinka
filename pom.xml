@@ -16,6 +16,20 @@
         https://tinkoffcreditsystems.github.io/invest-openapi/rest/
     </description>
 
+    <developers>
+        <developer>
+            <name>Ilya Lysenko</name>
+            <email>lysenko.ilya@gmaail.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License v3.0</name>
+            <url>https://github.com/0x100/tinka/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+
     <properties>
         <java.version>11</java.version>
     </properties>
@@ -87,7 +101,8 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>https://tinkoffcreditsystems.github.io/invest-openapi/swagger-ui/swagger.yaml</inputSpec>
+                            <inputSpec>https://tinkoffcreditsystems.github.io/invest-openapi/swagger-ui/swagger.yaml
+                            </inputSpec>
                             <language>java</language>
                             <library>resttemplate</library>
                             <generateApiDocumentation>false</generateApiDocumentation>
