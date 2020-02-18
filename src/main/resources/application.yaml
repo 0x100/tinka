@@ -1,4 +1,18 @@
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  main:
+    banner-mode: off
+
+logging:
+  level:
+    ru.ilysenko.tinka: DEBUG
+    ru.tinkoff.invest: DEBUG
+  pattern:
+    console: '%clr( %d{HH:mm:ss}){cyan}  %clr(%m){faint}%n'
+
 client:
   useSandbox: true
-  sandboxToken: 67867dffgdfg
+  sandboxToken: 56894568923sd
   exchangeToken: 435345sdfsd32

@@ -94,6 +94,9 @@
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
+                            <apiPackage>ru.tinkoff.invest.api</apiPackage>
+                            <modelPackage>ru.tinkoff.invest.model</modelPackage>
+                            <invokerPackage>ru.tinkoff.invest.client</invokerPackage>
                         </configuration>
                     </execution>
                 </executions>
