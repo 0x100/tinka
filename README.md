@@ -24,7 +24,7 @@ client:
 Run `mvnw clean package`
 
 ## API
-After build will be available the components (Spring):
+After compiling will be available next components (Spring):
 ```
 - MarketApi
 - OperationsApi
