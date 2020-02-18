@@ -39,9 +39,9 @@ You can find examples of using the API in the `MarketApiExample` class and in te
 To run the `MarketApiExample` use the command `$ mvnw spring-boot:run` or execute the application from your IDE.
 
 ## How to contribute
-Fork repository, make changes, send me a pull request. I will review your changes and apply them to the master branch shortly, 
+Fork the repository, make changes, send me a pull request. I will review your changes and apply them to the master branch shortly, 
 provided they don't violate quality standards. 
-To avoid frustration, before sending me your pull request please run Maven build:
+To avoid frustration, before sending a pull request please run the Maven build:
 ```
 $ mvnw clean package
 ```
