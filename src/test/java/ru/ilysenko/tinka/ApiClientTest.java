@@ -80,7 +80,7 @@ public class ApiClientTest {
 
     @Test
     public void getFigi() {
-        Ticker ticker = Ticker.SBERBANK;
+        Ticker ticker = Ticker.APPLE;
         String figi = marketApiHelper.getFigi(ticker);
 
         assertNotNull(figi);
@@ -89,7 +89,7 @@ public class ApiClientTest {
 
     @Test
     public void getCandles() {
-        String figi = marketApiHelper.getFigi(Ticker.APPLE);
+        String figi = marketApiHelper.getFigi(Ticker.GOOGLE);
         CandlesResponse response = marketApi.marketCandlesGet(figi, OffsetDateTime.now().minusDays(10), OffsetDateTime.now(), CandleResolution.DAY);
         assertNotNull(response);
 
@@ -150,7 +150,7 @@ public class ApiClientTest {
     public void getOperations() {
         OffsetDateTime from = OffsetDateTime.now().minusMonths(1);
         OffsetDateTime to = OffsetDateTime.now();
-        String figi = marketApiHelper.getFigi(Ticker.SBERBANK);
+        String figi = marketApiHelper.getFigi(Ticker.FACEBOOK);
         String brokerAccountId = getBrokerAccountId();
 
         OperationsResponse response = operationsApi.operationsGet(from, to, figi, brokerAccountId);

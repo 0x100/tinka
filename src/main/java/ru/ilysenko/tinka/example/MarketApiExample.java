@@ -38,7 +38,7 @@ public class MarketApiExample {
 
     @EventListener(ApplicationReadyEvent.class)
     public void getCurrentPrice() {
-        Ticker ticker = Ticker.SBERBANK;
+        Ticker ticker = Ticker.GOOGLE;
 
         OffsetDateTime now = OffsetDateTime.now();
         OffsetDateTime from = now.minusWeeks(1);
