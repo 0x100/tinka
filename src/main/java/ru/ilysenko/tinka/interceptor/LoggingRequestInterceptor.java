@@ -23,7 +23,8 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
     }
 
     @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+    @SneakyThrows
+    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
         traceRequest(request, body);
 
         ClientHttpResponse response = execution.execute(request, body);
@@ -54,7 +55,7 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
     }
 
     private String beautifyBody(String content) throws JsonProcessingException {
-        if(StringUtils.hasText(content) && isValidJson(content)) {
+        if (StringUtils.hasText(content) && isValidJson(content)) {
             Object json = objectMapper.readValue(content, Object.class);
             return String.format("\n%s", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json));
         } else {
