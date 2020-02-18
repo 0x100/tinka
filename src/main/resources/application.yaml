@@ -4,6 +4,8 @@ spring:
       enabled: ALWAYS
   main:
     banner-mode: off
+  profiles:
+    active: dev
 
 logging:
   level:
