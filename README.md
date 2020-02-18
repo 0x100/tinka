@@ -1,6 +1,11 @@
 # tinka
 Java implementation for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/invest-openapi/rest/
 
+###
+
+![compile](https://github.com/0x100/tinka/workflows/compile/badge.svg?branch=master)
+![compile](https://img.shields.io/github/last-commit/0x100/tinka)
+
 ## Requirements
 
 - JDK 11
