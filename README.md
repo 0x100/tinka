@@ -18,5 +18,16 @@ client:
 ## Build
 Run `mvnw clean package`
 
+## API
+After build will be available the components (Spring):
+```
+- MarketApi
+- OperationsApi
+- OrdersApi
+- PortfolioApi
+- SandboxApi
+- UserApi
+```
+
 ## Examples
 You can find examples of using the API in tests.
