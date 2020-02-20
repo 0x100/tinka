@@ -14,7 +14,9 @@ logging:
   pattern:
     console: '%clr( %d{HH:mm:ss}){cyan}  %clr(%m){faint}%n'
 
-client:
-  useSandbox: true
-  sandboxToken: 56894568923sd
-  exchangeToken: 435345sdfsd32
+tinkoff:
+  invest:
+    client:
+      useSandbox: true
+      sandboxToken: t.123456
+      exchangeToken: t.654321

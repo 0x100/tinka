@@ -14,10 +14,12 @@ Java implementation for Tinkoff Invest Rest API: https://tinkoffcreditsystems.gi
 Add your sandbox and/or exchange tokens in the `application.yaml`:
 
 ```
-client:
-  useSandbox: true
-  sandboxToken: 1122334455667788.AAbbCCdd
-  exchangeToken: ddEEffGG.0011223344556677
+tinkoff:
+  invest:
+    client:
+      useSandbox: true
+      sandboxToken: t.123456
+      exchangeToken: t.654321
 ```
 
 ## Build

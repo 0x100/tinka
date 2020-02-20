@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties("client")
+@ConfigurationProperties("tinkoff.invest.client")
 public class ApiClientProperties {
     private Boolean useSandbox;
     private String sandboxToken;
