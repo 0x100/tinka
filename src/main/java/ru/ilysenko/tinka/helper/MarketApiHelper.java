@@ -13,8 +13,13 @@ package ru.ilysenko.tinka.helper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.model.Ticker;
 import ru.tinkoff.invest.api.MarketApi;
+import ru.tinkoff.invest.model.Candle;
+import ru.tinkoff.invest.model.CandleResolution;
+import ru.tinkoff.invest.model.Candles;
+import ru.tinkoff.invest.model.CandlesResponse;
 import ru.tinkoff.invest.model.MarketInstrument;
 import ru.tinkoff.invest.model.MarketInstrumentList;
 import ru.tinkoff.invest.model.MarketInstrumentListResponse;
@@ -22,7 +27,9 @@ import ru.tinkoff.invest.model.MarketInstrumentListResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
 @Component
@@ -31,12 +38,51 @@ public class MarketApiHelper {
 
     private final MarketApi marketApi;
 
+    /**
+     * Get FIGI (instrument identifier) for a specified ticker
+     *
+     * @param ticker ticker value (for example, AAPL for Apple)
+     * @return instrument id
+     */
     public String getFigi(Ticker ticker) {
         return getMarketInstruments(ticker.getValue()).stream()
                 .filter(instrument -> Objects.equals(ticker.getValue(), instrument.getTicker()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Ticker not found"))
                 .getFigi();
+    }
+
+    /**
+     * Get candles in descending order
+     *
+     * @param figi             instrument id
+     * @param from             from date
+     * @param to               due date
+     * @param candleResolution candle period
+     * @return list of candles
+     */
+    public List<Candle> getCandles(String figi, OffsetDateTime from, OffsetDateTime to, CandleResolution candleResolution) {
+        return getCandles(figi, from, to, candleResolution, false);
+    }
+
+    /**
+     * Get candles
+     *
+     * @param figi             instrument id
+     * @param from             from date
+     * @param to               due date
+     * @param candleResolution candle period
+     * @return list of candles
+     */
+    public List<Candle> getCandles(String figi, OffsetDateTime from, OffsetDateTime to, CandleResolution candleResolution, boolean ascendingOrder) {
+        CandlesResponse response = marketApi.marketCandlesGet(figi, from, to, candleResolution);
+        return of(response)
+                .map(CandlesResponse::getPayload)
+                .map(Candles::getCandles)
+                .orElse(Collections.emptyList())
+                .stream()
+                .sorted((c1, c2) -> ascendingOrder ? c1.getTime().compareTo(c2.getTime()) : c2.getTime().compareTo(c1.getTime()))
+                .collect(Collectors.toList());
     }
 
     private List<MarketInstrument> getMarketInstruments(String ticker) {

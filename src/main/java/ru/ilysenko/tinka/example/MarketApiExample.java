@@ -20,45 +20,46 @@ import org.springframework.stereotype.Component;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
 import ru.ilysenko.tinka.model.Ticker;
-import ru.tinkoff.invest.api.MarketApi;
+import ru.tinkoff.invest.model.Candle;
 import ru.tinkoff.invest.model.CandleResolution;
-import ru.tinkoff.invest.model.Candles;
-import ru.tinkoff.invest.model.CandlesResponse;
 
-import java.util.Optional;
+import java.util.List;
+
+import static ru.ilysenko.tinka.helper.CalcHelper.differenceRate2String;
 
 @Slf4j
 @Component
 @Profile("!test")
 @RequiredArgsConstructor
 public class MarketApiExample {
-
-    private final MarketApi marketApi;
     private final MarketApiHelper marketApiHelper;
 
     @EventListener(ApplicationReadyEvent.class)
     public void getCurrentPrice() {
-        Ticker ticker = Ticker.GOOGLE;
+        Ticker ticker = Ticker.TESLA;
 
         OffsetDateTime now = OffsetDateTime.now();
         OffsetDateTime from = now.minusWeeks(1);
         OffsetDateTime to = now;
         String figi = marketApiHelper.getFigi(ticker);
-        CandleResolution candleResolution = CandleResolution.WEEK;
+        CandleResolution candleResolution = CandleResolution.DAY;
 
-        CandlesResponse response = marketApi.marketCandlesGet(figi, from, to, candleResolution);
-        Optional.ofNullable(response)
-                .map(CandlesResponse::getPayload)
-                .map(Candles::getCandles)
-                .flatMap(c -> c.stream().findFirst())
-                .ifPresentOrElse(
-                        candle -> {
-                            log.info("Ticker: {}", ticker.getValue());
-                            log.info("Open price: {}", candle.getO());
-                            log.info("Current price: {}", candle.getC());
-                            log.info("Highest price: {}", candle.getH());
-                            log.info("Lowest price: {}", candle.getL());
-                        },
-                        () -> log.warn("Today's candle for {} is not found", ticker));
+        List<Candle> candles = marketApiHelper.getCandles(figi, from, to, candleResolution);
+        if (candles.isEmpty()) {
+            log.warn("Candles for {} is not found", ticker);
+        } else {
+            Candle currentCandle = candles.get(0);
+            Candle previousCandle = candles.size() > 1 ? candles.get(1) : currentCandle;
+            Double currentPrice = currentCandle.getC();
+
+            log.info("\n\n");
+            log.info("Ticker: {}", ticker.getValue());
+            log.info("Prev price: {}", previousCandle.getC());
+            log.info("Open price: {} {}", currentCandle.getO(), differenceRate2String(previousCandle.getC(), currentCandle.getO()));
+            log.info("Current price: {} {}", currentPrice, differenceRate2String(previousCandle.getC(), currentPrice));
+            log.info("Highest price: {} {}", currentCandle.getH(), differenceRate2String(currentPrice, currentCandle.getH()));
+            log.info("Lowest price: {} {}", currentCandle.getL(), differenceRate2String(currentPrice, currentCandle.getL()));
+            log.info("Volume: {} {}", currentCandle.getV(), differenceRate2String(previousCandle.getV(), currentCandle.getV()));
+        }
     }
 }

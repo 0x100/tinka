@@ -19,7 +19,8 @@ import lombok.Getter;
 public enum Ticker {
     APPLE("AAPL"),
     GOOGLE("GOOGL"),
-    FACEBOOK("FB");
+    FACEBOOK("FB"),
+    TESLA("TSLA");
 
     private String value;
 }
