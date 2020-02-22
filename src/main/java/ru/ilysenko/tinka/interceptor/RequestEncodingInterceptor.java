@@ -24,7 +24,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class RequestEncodingInterceptor implements ClientHttpRequestInterceptor {
 
@@ -51,8 +50,7 @@ public class RequestEncodingInterceptor implements ClientHttpRequestInterceptor 
 
     private URI encodeUri(URI uri) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(uri);
-        List<NameValuePair> parameters = URLEncodedUtils.parse(uri, StandardCharsets.UTF_8);
-        for (NameValuePair param : parameters) {
+        for (NameValuePair param : URLEncodedUtils.parse(uri, StandardCharsets.UTF_8)) {
             uriComponentsBuilder.replaceQueryParam(param.getName(), URLEncoder.encode(param.getValue(), StandardCharsets.UTF_8).replace("+", "%2B"));
         }
         return uriComponentsBuilder.build(true).toUri();
