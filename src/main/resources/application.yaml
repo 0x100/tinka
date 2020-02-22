@@ -9,7 +9,7 @@ spring:
 
 logging:
   level:
-    ru.ilysenko.tinka: DEBUG
+    ru.ilysenko.tinka: INFO
     ru.tinkoff.invest: DEBUG
   pattern:
     console: '%clr( %d{HH:mm:ss}){cyan}  %clr(%m){faint}%n'
