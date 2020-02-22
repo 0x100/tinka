@@ -19,12 +19,14 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
+import ru.ilysenko.tinka.indicator.WilliamsRIndicator;
 import ru.ilysenko.tinka.model.Ticker;
 import ru.tinkoff.invest.model.Candle;
 import ru.tinkoff.invest.model.CandleResolution;
 
 import java.util.List;
 
+import static java.lang.String.format;
 import static ru.ilysenko.tinka.helper.CalcHelper.differenceRate2String;
 
 @Slf4j
@@ -35,16 +37,15 @@ public class MarketApiExample {
     private final MarketApiHelper marketApiHelper;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void getCurrentPrice() {
+    public void execute() {
+        example1();
+        example2();
+    }
+
+    private void example1() {
         Ticker ticker = Ticker.TESLA;
+        List<Candle> candles = getCandles(ticker);
 
-        OffsetDateTime now = OffsetDateTime.now();
-        OffsetDateTime from = now.minusWeeks(1);
-        OffsetDateTime to = now;
-        String figi = marketApiHelper.getFigi(ticker);
-        CandleResolution candleResolution = CandleResolution.DAY;
-
-        List<Candle> candles = marketApiHelper.getCandles(figi, from, to, candleResolution);
         if (candles.isEmpty()) {
             log.warn("Candles for {} is not found", ticker);
         } else {
@@ -53,6 +54,8 @@ public class MarketApiExample {
             Double currentPrice = currentCandle.getC();
 
             log.info("\n\n");
+            log.info("===Example 1===");
+            log.info("");
             log.info("Ticker: {}", ticker.getValue());
             log.info("Prev price: {}", previousCandle.getC());
             log.info("Open price: {} {}", currentCandle.getO(), differenceRate2String(previousCandle.getC(), currentCandle.getO()));
@@ -61,5 +64,34 @@ public class MarketApiExample {
             log.info("Lowest price: {} {}", currentCandle.getL(), differenceRate2String(currentPrice, currentCandle.getL()));
             log.info("Volume: {} {}", currentCandle.getV(), differenceRate2String(previousCandle.getV(), currentCandle.getV()));
         }
+    }
+
+    private void example2() {
+        Ticker ticker = Ticker.FACEBOOK;
+        List<Candle> candles = getCandles(ticker);
+
+        WilliamsRIndicator williamsRIndicator = WilliamsRIndicator.builder()
+                .length(25)
+                .build();
+
+        if (candles.isEmpty()) {
+            log.warn("Candles for {} is not found", ticker);
+        } else {
+            log.info("\n\n");
+            log.info("===Example 2===");
+            log.info("");
+            log.info("Ticker: {}", ticker.getValue());
+            log.info("Williams %R indicator: {}", format("%.2f", williamsRIndicator.calculate(candles)));
+        }
+    }
+
+    private List<Candle> getCandles(Ticker ticker) {
+        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime from = now.minusMonths(2);
+        OffsetDateTime to = now;
+        String figi = marketApiHelper.getFigi(ticker);
+        CandleResolution candleResolution = CandleResolution.DAY;
+
+        return marketApiHelper.getCandles(figi, from, to, candleResolution);
     }
 }
