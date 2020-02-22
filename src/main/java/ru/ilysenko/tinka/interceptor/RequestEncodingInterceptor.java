@@ -31,21 +31,24 @@ public class RequestEncodingInterceptor implements ClientHttpRequestInterceptor 
     @Override
     @SneakyThrows
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
-        HttpRequest encodedRequest = new HttpRequestWrapper(request) {
-            private URI uri;
-
-            @Override
-            public URI getURI() {
-                if (uri == null) {
-                    uri = encodeUri(request.getURI());
-                }
-                return uri;
-            }
-        };
+        HttpRequest encodedRequest = getHttpRequest(request);
         return execution.execute(encodedRequest, body);
     }
 
-    @SneakyThrows
+    private HttpRequest getHttpRequest(HttpRequest request) {
+        return new HttpRequestWrapper(request) {
+                private URI uri;
+
+                @Override
+                public URI getURI() {
+                    if (uri == null) {
+                        uri = encodeUri(request.getURI()); // Caching the request uri for a recall of the getURI method from another interceptors
+                    }
+                    return uri;
+                }
+            };
+    }
+
     private URI encodeUri(URI uri) {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUri(uri);
         List<NameValuePair> parameters = URLEncodedUtils.parse(uri, StandardCharsets.UTF_8);
