@@ -19,6 +19,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
+import ru.ilysenko.tinka.indicator.Indicator;
 import ru.ilysenko.tinka.indicator.WilliamsRIndicator;
 import ru.ilysenko.tinka.model.Ticker;
 import ru.tinkoff.invest.model.Candle;
@@ -70,13 +71,11 @@ public class MarketApiExample {
         Ticker ticker = Ticker.FACEBOOK;
         List<Candle> candles = getCandles(ticker);
 
-        WilliamsRIndicator williamsRIndicator = WilliamsRIndicator.builder()
-                .length(25)
-                .build();
-
         if (candles.isEmpty()) {
             log.warn("Candles for {} is not found", ticker);
         } else {
+            Indicator williamsRIndicator = WilliamsRIndicator.builder().length(25).build();
+
             log.info("");
             log.info("===Example 2===");
             log.info("");
