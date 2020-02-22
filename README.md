@@ -36,6 +36,11 @@ After compiling will be available next components (Spring):
 - UserApi
 ```
 
+## Indicators
+
+Implemented technical indicators:
+- Williams %R
+
 ## Examples
 You can find examples of using the API in the `MarketApiExample` class and in tests.
 To run the `MarketApiExample` use the command `$ mvnw spring-boot:run` or execute the application from your IDE.
