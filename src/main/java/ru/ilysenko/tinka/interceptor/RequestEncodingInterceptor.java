@@ -31,11 +31,11 @@ public class RequestEncodingInterceptor implements ClientHttpRequestInterceptor 
     @Override
     @SneakyThrows
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) {
-        HttpRequest encodedRequest = getHttpRequest(request);
+        HttpRequest encodedRequest = encode(request);
         return execution.execute(encodedRequest, body);
     }
 
-    private HttpRequest getHttpRequest(HttpRequest request) {
+    private HttpRequest encode(HttpRequest request) {
         return new HttpRequestWrapper(request) {
                 private URI uri;
 
