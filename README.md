@@ -40,6 +40,15 @@ After compiling will be available next components (Spring):
 You can find examples of using the API in the `MarketApiExample` class and in tests.
 To run the `MarketApiExample` use the command `$ mvnw spring-boot:run` or execute the application from your IDE.
 
+## Logging
+To enable logging of http requests apply this config: 
+
+```
+logging:
+  level:
+    ru.ilysenko.tinka: DEBUG
+```
+
 ## How to contribute
 Fork the repository, make changes, write a test for your code, send me a pull request. 
 I will review your changes and apply them to the master branch shortly, provided they don't violate quality standards. 
