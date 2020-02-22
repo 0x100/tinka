@@ -53,7 +53,7 @@ public class MarketApiExample {
             Candle previousCandle = candles.size() > 1 ? candles.get(1) : currentCandle;
             double currentPrice = currentCandle.getC();
 
-            log.info("\n\n");
+            log.info("");
             log.info("===Example 1===");
             log.info("");
             log.info("Ticker: {}", ticker.getValue());
@@ -77,7 +77,7 @@ public class MarketApiExample {
         if (candles.isEmpty()) {
             log.warn("Candles for {} is not found", ticker);
         } else {
-            log.info("\n\n");
+            log.info("");
             log.info("===Example 2===");
             log.info("");
             log.info("Ticker: {}", ticker.getValue());
