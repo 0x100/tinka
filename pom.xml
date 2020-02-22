@@ -12,7 +12,7 @@
     <artifactId>tinka</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>tinka</name>
-    <description>Java implementation for Tinkoff Invest Rest API:
+    <description>Java client for Tinkoff Invest Rest API:
         https://tinkoffcreditsystems.github.io/invest-openapi/rest/
     </description>
 

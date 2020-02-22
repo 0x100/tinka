@@ -1,5 +1,5 @@
 # tinka
-Java implementation for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/invest-openapi/rest/
+Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/invest-openapi/rest/
 
 ###
 
