@@ -51,7 +51,7 @@ public class MarketApiExample {
         } else {
             Candle currentCandle = candles.get(0);
             Candle previousCandle = candles.size() > 1 ? candles.get(1) : currentCandle;
-            Double currentPrice = currentCandle.getC();
+            double currentPrice = currentCandle.getC();
 
             log.info("\n\n");
             log.info("===Example 1===");

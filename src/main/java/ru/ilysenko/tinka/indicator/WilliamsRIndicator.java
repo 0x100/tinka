@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 import ru.tinkoff.invest.model.Candle;
 
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Implementation of the Williams %R indicator
@@ -35,7 +34,7 @@ public class WilliamsRIndicator implements Indicator {
         }
         double maxHi = getMaxHi(candles);
         double minLo = getMinLo(candles);
-        Double currentPrice = getLastCandle(candles).getC();
+        double currentPrice = getLastCandle(candles).getC();
 
         return ((currentPrice - maxHi) / (maxHi - minLo)) * 100;
     }
