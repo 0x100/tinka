@@ -41,7 +41,7 @@ public class RsiIndicator implements Indicator {
 
             if (todayPrice - yesterdayPrice > 0) {
                 uEmaN += todayPrice - yesterdayPrice;
-            } else {
+            } else if (todayPrice - yesterdayPrice < 0) {
                 dEmaN += yesterdayPrice - todayPrice;
             }
         }
