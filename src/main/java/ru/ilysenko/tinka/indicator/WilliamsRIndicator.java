@@ -25,11 +25,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WilliamsRIndicator implements Indicator {
-    private int length = 3;
+    private int periodsCount = 3;
 
     @Override
     public double calculate(List<Candle> candles) {
-        if(candles.size() < length) {
+        if(candles.size() < periodsCount) {
             return Double.NaN;
         }
         double maxHi = getMaxHi(candles);
@@ -41,7 +41,7 @@ public class WilliamsRIndicator implements Indicator {
 
     private double getMinLo(List<Candle> candles) {
         return candles.stream()
-                .limit(length)
+                .limit(periodsCount)
                 .map(Candle::getL)
                 .min(Double::compare)
                 .orElseThrow();
@@ -49,7 +49,7 @@ public class WilliamsRIndicator implements Indicator {
 
     private double getMaxHi(List<Candle> candles) {
         return candles.stream()
-                .limit(length)
+                .limit(periodsCount)
                 .map(Candle::getH)
                 .max(Double::compare)
                 .orElseThrow();

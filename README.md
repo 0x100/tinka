@@ -39,6 +39,7 @@ After compiling will be available next components (Spring):
 ## Indicators
 
 Implemented technical indicators:
+- RSI (Relative Strength Index)
 - Williams %R
 
 ## Examples

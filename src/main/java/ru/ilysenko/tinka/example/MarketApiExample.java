@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
 import ru.ilysenko.tinka.indicator.Indicator;
+import ru.ilysenko.tinka.indicator.RsiIndicator;
 import ru.ilysenko.tinka.indicator.WilliamsRIndicator;
 import ru.ilysenko.tinka.model.Ticker;
 import ru.tinkoff.invest.model.Candle;
@@ -74,12 +75,14 @@ public class MarketApiExample {
         if (candles.isEmpty()) {
             log.warn("Candles for {} is not found", ticker);
         } else {
-            Indicator williamsRIndicator = WilliamsRIndicator.builder().length(25).build();
+            Indicator williamsRIndicator = WilliamsRIndicator.builder().periodsCount(25).build();
+            Indicator rsiIndicator = RsiIndicator.builder().periodsCount(7).build();
 
             log.info("");
             log.info("===Example 2===");
             log.info("");
             log.info("Ticker: {}", ticker.getValue());
+            log.info("RSI indicator: {}", format("%.2f", rsiIndicator.calculate(candles)));
             log.info("Williams %R indicator: {}", format("%.2f", williamsRIndicator.calculate(candles)));
         }
     }
