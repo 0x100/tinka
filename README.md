@@ -40,6 +40,7 @@ After compiling will be available next components (Spring):
 
 Implemented technical indicators:
 - RSI (Relative Strength Index)
+- CCI (Commodity Channel Index)
 - Williams %R
 
 ## Examples

@@ -19,6 +19,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
+import ru.ilysenko.tinka.indicator.CciIndicator;
 import ru.ilysenko.tinka.indicator.Indicator;
 import ru.ilysenko.tinka.indicator.RsiIndicator;
 import ru.ilysenko.tinka.indicator.WilliamsRIndicator;
@@ -45,7 +46,7 @@ public class MarketApiExample {
     }
 
     private void example1() {
-        Ticker ticker = Ticker.TESLA;
+        Ticker ticker = Ticker.FACEBOOK;
         List<Candle> candles = getCandles(ticker);
 
         if (candles.isEmpty()) {
@@ -75,14 +76,16 @@ public class MarketApiExample {
         if (candles.isEmpty()) {
             log.warn("Candles for {} is not found", ticker);
         } else {
-            Indicator williamsRIndicator = WilliamsRIndicator.builder().periodsCount(25).build();
-            Indicator rsiIndicator = RsiIndicator.builder().periodsCount(7).build();
+            Indicator rsiIndicator = RsiIndicator.create().periodsCount(7).init();
+            Indicator cciIndicator = CciIndicator.create().periodsCount(21).init();
+            Indicator williamsRIndicator = WilliamsRIndicator.create().periodsCount(18).init();
 
             log.info("");
             log.info("===Example 2===");
             log.info("");
             log.info("Ticker: {}", ticker.getValue());
             log.info("RSI indicator: {}", format("%.2f", rsiIndicator.calculate(candles)));
+            log.info("CCI indicator: {}", format("%.2f", cciIndicator.calculate(candles)));
             log.info("Williams %R indicator: {}", format("%.2f", williamsRIndicator.calculate(candles)));
         }
     }

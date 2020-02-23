@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Implementation of the Williams %R indicator
  */
-@Builder
+@Builder(builderMethodName = "create", buildMethodName = "init")
 @NoArgsConstructor
 @AllArgsConstructor
 public class WilliamsRIndicator implements Indicator {
