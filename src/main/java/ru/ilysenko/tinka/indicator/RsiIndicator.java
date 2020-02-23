@@ -35,7 +35,7 @@ public class RsiIndicator implements Indicator {
         double uEmaN = 0;
         double dEmaN = 0;
 
-        for (int i = 0; i <= periodsCount; i++) {
+        for (int i = 0; i < periodsCount; i++) {
             double todayPrice = candles.get(i).getC();
             double yesterdayPrice = candles.get(i + 1).getC();
 
