@@ -32,23 +32,23 @@ public class RsiIndicator implements Indicator {
         if (candles.size() < periodsCount + 1) {
             return Double.NaN;
         }
-        double uEmaN = 0;
-        double dEmaN = 0;
+        double uSma = 0;
+        double dSma = 0;
 
         for (int i = 0; i < periodsCount; i++) {
             double todayPrice = candles.get(i).getC();
             double yesterdayPrice = candles.get(i + 1).getC();
 
             if (todayPrice - yesterdayPrice > 0) {
-                uEmaN += todayPrice - yesterdayPrice;
+                uSma += todayPrice - yesterdayPrice;
             } else if (todayPrice - yesterdayPrice < 0) {
-                dEmaN += yesterdayPrice - todayPrice;
+                dSma += yesterdayPrice - todayPrice;
             }
         }
-        uEmaN /= periodsCount;
-        dEmaN /= periodsCount;
+        uSma /= periodsCount;
+        dSma /= periodsCount;
 
-        double rs = dEmaN != 0 ? uEmaN / dEmaN : 100;
+        double rs = dSma != 0 ? uSma / dSma : 100;
         return 100 - 100 / (1 + rs);
     }
 }
