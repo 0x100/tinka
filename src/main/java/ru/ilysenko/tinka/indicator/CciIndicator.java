@@ -18,25 +18,30 @@ import ru.tinkoff.invest.model.Candle;
 
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 /**
  * Implementation of the CCI (Commodity Channel Index) indicator
  */
-@Builder(builderMethodName = "create", buildMethodName = "init")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(builderMethodName = "create", buildMethodName = "init")
 public class CciIndicator implements Indicator {
     private int periodsCount = 14;
 
     @Override
     public double calculate(List<Candle> candles) {
+        candles = limitCandles(candles, periodsCount);
+
         if (candles.size() < periodsCount) {
             return Double.NaN;
         }
-        double todayPrice = getLatestCandle(candles).getC();
+        Candle latestCandle = getLatestCandle(candles);
+        double typicalPrice = calcTypicalPrice(latestCandle);
         double sma = calcSma(candles);
         double mean = calcMean(candles, sma);
 
-        return (todayPrice - sma) / (0.015 * mean);
+        return (typicalPrice - sma) / (.015 * mean);
     }
 
     private double calcSma(List<Candle> candles) {
@@ -51,14 +56,14 @@ public class CciIndicator implements Indicator {
     private double calcMean(List<Candle> candles, double sma) {
         double mean = 0;
         for (int i = 0; i < periodsCount; i++) {
-            mean += Math.abs(sma - calcTypicalPrice(candles.get(i)));
+            mean += abs(sma - calcTypicalPrice(candles.get(i)));
         }
         mean /= periodsCount;
         return mean;
     }
 
     private double calcTypicalPrice(Candle candle) {
-        return (candle.getH() + candle.getL() + candle.getC()) / 3.0;
+        return (candle.getH() + candle.getL() + candle.getC()) / 3;
     }
 
     private Candle getLatestCandle(List<Candle> candles) {
