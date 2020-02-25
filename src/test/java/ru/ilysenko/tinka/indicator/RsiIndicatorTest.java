@@ -1,20 +1,32 @@
 package ru.ilysenko.tinka.indicator;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import ru.tinkoff.invest.model.Candle;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static java.lang.String.format;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RsiIndicatorTest extends IndicatorTest {
 
     @Test
-    void calculate() {
-        RsiIndicator indicator = RsiIndicator.create().periodsCount(3).init();
+    void period1() {
+        Indicator indicator = RsiIndicator.create().periodsCount(1).init();
         double result = indicator.calculate(getCandles());
-        assertTrue(result > 0);
+        assertEquals("100,0", format("%.1f", result));
+    }
+
+    @Test
+    @Ignore
+    void period2() {
+        Indicator indicator = RsiIndicator.create().periodsCount(2).init();
+        double result = indicator.calculate(getCandles());
+        assertEquals("46,5643", format("%.4f", result));
+    }
+
+    @Test
+    void period4() {
+        Indicator indicator = RsiIndicator.create().periodsCount(4).init();
+        double result = indicator.calculate(getCandles());
+        assertEquals("45,0", format("%.1f", result));
     }
 }

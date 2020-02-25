@@ -21,14 +21,16 @@ import java.util.List;
 /**
  * Implementation of the RSI (Relative Strength Index) indicator
  */
-@Builder(builderMethodName = "create", buildMethodName = "init")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(builderMethodName = "create", buildMethodName = "init")
 public class RsiIndicator implements Indicator {
     private int periodsCount = 14;
 
     @Override
     public double calculate(List<Candle> candles) {
+        candles = limitCandles(candles, periodsCount + 1);
+
         if (candles.size() < periodsCount + 1) {
             return Double.NaN;
         }
@@ -45,10 +47,12 @@ public class RsiIndicator implements Indicator {
                 dSma += yesterdayPrice - todayPrice;
             }
         }
-        uSma /= periodsCount;
-        dSma /= periodsCount;
 
-        double rs = dSma != 0 ? uSma / dSma : 100;
-        return 100 - 100 / (1 + rs);
+        if (dSma == 0) {
+            return 100d;
+        } else {
+            double rs = uSma / dSma;
+            return 100 - 100 / (1 + rs);
+        }
     }
 }
