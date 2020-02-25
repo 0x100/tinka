@@ -56,7 +56,8 @@ public class CciIndicator implements Indicator {
     private double calcMean(List<Candle> candles, double sma) {
         double mean = 0;
         for (int i = 0; i < periodsCount; i++) {
-            mean += abs(sma - calcTypicalPrice(candles.get(i)));
+            double typicalPrice = calcTypicalPrice(candles.get(i));
+            mean += abs(sma - typicalPrice);
         }
         mean /= periodsCount;
         return mean;
