@@ -17,14 +17,13 @@ import lombok.NoArgsConstructor;
 import ru.tinkoff.invest.model.Candle;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of the Williams %R indicator
  */
-@Builder(builderMethodName = "create", buildMethodName = "init")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(builderMethodName = "create", buildMethodName = "init")
 public class WilliamsRIndicator implements Indicator {
     private int periodsCount = 3;
 
@@ -54,12 +53,6 @@ public class WilliamsRIndicator implements Indicator {
                 .map(Candle::getH)
                 .max(Double::compare)
                 .orElseThrow();
-    }
-
-    private List<Candle> limitCandles(List<Candle> candles, int periodsCount) {
-        return candles.stream()
-                .limit(periodsCount)
-                .collect(Collectors.toList());
     }
 
     private Candle getLastCandle(List<Candle> candles) {
