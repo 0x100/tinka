@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import ru.tinkoff.invest.model.Candle;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the Williams %R indicator
@@ -29,7 +30,9 @@ public class WilliamsRIndicator implements Indicator {
 
     @Override
     public double calculate(List<Candle> candles) {
-        if(candles.size() < periodsCount) {
+        candles = limitCandles(candles, periodsCount);
+
+        if (candles.size() < periodsCount) {
             return Double.NaN;
         }
         double maxHi = getMaxHi(candles);
@@ -41,7 +44,6 @@ public class WilliamsRIndicator implements Indicator {
 
     private double getMinLo(List<Candle> candles) {
         return candles.stream()
-                .limit(periodsCount)
                 .map(Candle::getL)
                 .min(Double::compare)
                 .orElseThrow();
@@ -49,10 +51,15 @@ public class WilliamsRIndicator implements Indicator {
 
     private double getMaxHi(List<Candle> candles) {
         return candles.stream()
-                .limit(periodsCount)
                 .map(Candle::getH)
                 .max(Double::compare)
                 .orElseThrow();
+    }
+
+    private List<Candle> limitCandles(List<Candle> candles, int periodsCount) {
+        return candles.stream()
+                .limit(periodsCount)
+                .collect(Collectors.toList());
     }
 
     private Candle getLastCandle(List<Candle> candles) {

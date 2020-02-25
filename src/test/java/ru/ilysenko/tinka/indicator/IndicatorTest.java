@@ -12,19 +12,22 @@ public abstract class IndicatorTest {
 
     List<Candle> getCandles() {
         List<Candle> candles = new ArrayList<>();
-        candles.add(makeCandle(60.12, 60.14, 59.43));
-        candles.add(makeCandle(59.72, 59.86, 59.11));
-        candles.add(makeCandle(59.77, 60.00, 59.47));
-        candles.add(makeCandle(59.53, 59.93, 59.45));
-        candles.add(makeCandle(59.95, 60.07, 59.62));
+        /*
+         * First candles of the NET ticker on the Month time-frame (from 2019-09-02 to 2020-01-01)
+         */
+        candles.add(makeCandle(17.82, 19.3, 16.8));
+        candles.add(makeCandle(17.04, 19.4, 16.24));
+        candles.add(makeCandle(19.47, 19.8, 15.55));
+        candles.add(makeCandle(16.83, 18.66, 14.5));
+        candles.add(makeCandle(18.58, 22.07, 17.54));
         return candles;
     }
 
     private Candle makeCandle(double closePrice, double highestPrice, double lowestPrice) {
         Candle candle = new Candle();
         candle.setC(closePrice);
-        candle.setL(lowestPrice);
         candle.setH(highestPrice);
+        candle.setL(lowestPrice);
 
         return candle;
     }
