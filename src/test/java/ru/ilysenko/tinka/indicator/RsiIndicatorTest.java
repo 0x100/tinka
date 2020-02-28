@@ -1,6 +1,6 @@
 package ru.ilysenko.tinka.indicator;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static java.lang.String.format;
@@ -16,7 +16,7 @@ class RsiIndicatorTest extends IndicatorTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     void period2() {
         Indicator indicator = RsiIndicator.create().periodsCount(2).init();
         double result = indicator.calculate(getCandles());

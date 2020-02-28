@@ -12,13 +12,16 @@
 package ru.ilysenko.tinka;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.threeten.bp.OffsetDateTime;
+import ru.ilysenko.tinka.config.ApiClientProperties;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
 import ru.ilysenko.tinka.model.Ticker;
 import ru.tinkoff.invest.api.MarketApi;
@@ -51,11 +54,15 @@ import static java.util.Optional.ofNullable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeNotNull;
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 public class ApiClientTest {
+    private static final String SANDBOX_TOKEN_STUB = "t.123456";
 
     @Autowired
     private MarketApi marketApi;
@@ -77,6 +84,15 @@ public class ApiClientTest {
 
     @Autowired
     private MarketApiHelper marketApiHelper;
+
+    @Autowired
+    private ApiClientProperties properties;
+
+    @Before
+    public void setUp() {
+        assumeNotNull(properties.getSandboxToken());
+        assumeFalse(SANDBOX_TOKEN_STUB.equals(properties.getSandboxToken()));
+    }
 
     @Test
     public void getFigi() {

@@ -1,14 +1,11 @@
 package ru.ilysenko.tinka.indicator;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import ru.tinkoff.invest.model.Candle;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(JUnit4.class)
-public abstract class IndicatorTest {
+abstract class IndicatorTest {
 
     List<Candle> getCandles() {
         List<Candle> candles = new ArrayList<>();
