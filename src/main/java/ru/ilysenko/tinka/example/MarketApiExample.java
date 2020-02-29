@@ -55,16 +55,17 @@ public class MarketApiExample {
             Candle currentCandle = candles.get(0);
             Candle previousCandle = candles.size() > 1 ? candles.get(1) : currentCandle;
             double currentPrice = currentCandle.getC();
+            double previousPrice = previousCandle.getC();
 
             log.info("");
             log.info("===Example 1===");
             log.info("");
             log.info("Ticker: {}", ticker.getValue());
-            log.info("Prev price: {}", previousCandle.getC());
-            log.info("Open price: {} {}", currentCandle.getO(), differenceRate2String(previousCandle.getC(), currentCandle.getO()));
-            log.info("Current price: {} {}", currentPrice, differenceRate2String(previousCandle.getC(), currentPrice));
-            log.info("Highest price: {} {}", currentCandle.getH(), differenceRate2String(currentPrice, currentCandle.getH()));
-            log.info("Lowest price: {} {}", currentCandle.getL(), differenceRate2String(currentPrice, currentCandle.getL()));
+            log.info("Prev price: {}", previousPrice);
+            log.info("Open price: {} {}", currentCandle.getO(), differenceRate2String(previousPrice, currentCandle.getO()));
+            log.info("Current price: {} {}", currentPrice, differenceRate2String(previousPrice, currentPrice));
+            log.info("Highest price: {} {}", currentCandle.getH(), differenceRate2String(previousPrice, currentCandle.getH()));
+            log.info("Lowest price: {} {}", currentCandle.getL(), differenceRate2String(previousPrice, currentCandle.getL()));
             log.info("Volume: {} {}", currentCandle.getV(), differenceRate2String(previousCandle.getV(), currentCandle.getV()));
         }
     }
