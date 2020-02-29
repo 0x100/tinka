@@ -3,7 +3,7 @@ Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/
 
 ###
 
-![compile](https://github.com/0x100/tinka/workflows/compile/badge.svg?branch=master)
+![build](https://github.com/0x100/tinka/workflows/build/badge.svg?branch=master)
 ![compile](https://img.shields.io/github/last-commit/0x100/tinka)
 
 ## Requirements
