@@ -15,13 +15,14 @@ import ru.tinkoff.invest.model.Candle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 abstract class IndicatorTest {
 
     List<Candle> getCandles() {
         List<Candle> candles = new ArrayList<>();
         /*
-         * First candles of the NET ticker on the Month time-frame (from 2019-09-02 to 2020-01-01)
+         * First candles of the NET (Cloudflare) ticker at the month time frame (from 2019-09-02 to 2020-01-01)
          */
         candles.add(makeCandle(17.82, 19.3, 16.8));
         candles.add(makeCandle(17.04, 19.4, 16.24));
@@ -38,5 +39,9 @@ abstract class IndicatorTest {
         candle.setL(lowestPrice);
 
         return candle;
+    }
+
+    String format(double value) {
+        return String.format(Locale.ROOT, "%.4f", value);
     }
 }
