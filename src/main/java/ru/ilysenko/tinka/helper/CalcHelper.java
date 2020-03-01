@@ -32,10 +32,10 @@ public class CalcHelper {
     }
 
     public static double ema(List<Double> values, int n) {
-        double result = values.stream().limit(n).reduce(0d, Double::sum) / n;
+        double ema = values.stream().limit(n).reduce(0d, Double::sum) / n;
         for (int i = n; i < values.size(); i++) {
-            result = (result * (n - 1) + values.get(i)) / n;
+            ema = (ema * (n - 1) + values.get(i)) / n;
         }
-        return result;
+        return ema;
     }
 }
