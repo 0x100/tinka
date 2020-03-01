@@ -53,18 +53,15 @@ public class RsiIndicator implements Indicator {
                 losses.add(0d);
             }
         }
-        double uInitialSma = gains.stream().limit(periodsCount).reduce(0d, Double::sum) / periodsCount;
-        double dInitialSma = losses.stream().limit(periodsCount).reduce(0d, Double::sum) / periodsCount;
-
-        if (dInitialSma == 0) {
-            return 100d;
-        }
-        double avgU = uInitialSma;
-        double avgD = dInitialSma;
+        double avgU = gains.stream().limit(periodsCount).reduce(0d, Double::sum) / periodsCount;
+        double avgD = losses.stream().limit(periodsCount).reduce(0d, Double::sum) / periodsCount;
 
         for (int i = periodsCount; i < candles.size() - 1; i++) {
             avgU = (avgU * (periodsCount - 1) + gains.get(i)) / periodsCount;
             avgD = (avgD * (periodsCount - 1) + losses.get(i)) / periodsCount;
+        }
+        if (avgD == 0) {
+            return 100;
         }
         double rs = avgU / avgD;
         return 100 - 100 / (1 + rs);
