@@ -85,6 +85,20 @@ public class MarketApiHelper {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get candles
+     *
+     * @param ticker           ticker
+     * @param from             from date
+     * @param to               due date
+     * @param candleResolution candle period
+     * @return list of candles
+     */
+    public List<Candle> getCandles(Ticker ticker, OffsetDateTime from, OffsetDateTime to, CandleResolution candleResolution) {
+        String figi = getFigi(ticker);
+        return getCandles(figi, from, to, candleResolution);
+    }
+
     private List<MarketInstrument> getMarketInstruments(String ticker) {
         return ofNullable(marketApi.marketSearchByTickerGet(ticker))
                 .map(MarketInstrumentListResponse::getPayload)

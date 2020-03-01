@@ -46,7 +46,7 @@ public class MarketApiExample {
     }
 
     private void example1() {
-        Ticker ticker = Ticker.FACEBOOK;
+        Ticker ticker = Ticker.TESLA;
         List<Candle> candles = getCandles(ticker);
 
         if (candles.isEmpty()) {
@@ -77,9 +77,9 @@ public class MarketApiExample {
         if (candles.isEmpty()) {
             log.warn("Candles for {} is not found", ticker);
         } else {
-            Indicator rsiIndicator = RsiIndicator.create().periodsCount(7).init();
-            Indicator cciIndicator = CciIndicator.create().periodsCount(21).init();
-            Indicator williamsRIndicator = WilliamsRIndicator.create().periodsCount(18).init();
+            Indicator rsiIndicator = RsiIndicator.create().periodsCount(8).init();
+            Indicator cciIndicator = CciIndicator.create().periodsCount(13).init();
+            Indicator williamsRIndicator = WilliamsRIndicator.create().periodsCount(21).init();
 
             log.info("");
             log.info("===Example 2===");
@@ -95,9 +95,8 @@ public class MarketApiExample {
         OffsetDateTime now = OffsetDateTime.now();
         OffsetDateTime from = now.minusMonths(2);
         OffsetDateTime to = now;
-        String figi = marketApiHelper.getFigi(ticker);
         CandleResolution candleResolution = CandleResolution.DAY;
 
-        return marketApiHelper.getCandles(figi, from, to, candleResolution);
+        return marketApiHelper.getCandles(ticker, from, to, candleResolution);
     }
 }
