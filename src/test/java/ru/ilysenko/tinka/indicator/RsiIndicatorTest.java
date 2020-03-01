@@ -11,7 +11,6 @@
  */
 package ru.ilysenko.tinka.indicator;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,11 +25,17 @@ class RsiIndicatorTest extends IndicatorTest {
     }
 
     @Test
-    @Disabled
     void period2() {
         Indicator indicator = RsiIndicator.create().periodsCount(2).init();
         double result = indicator.calculate(getCandles());
-        assertEquals("46.5643", format(result));
+        assertEquals("39.1220", format(result));
+    }
+
+    @Test
+    void period3() {
+        Indicator indicator = RsiIndicator.create().periodsCount(3).init();
+        double result = indicator.calculate(getCandles());
+        assertEquals("40.3540", format(result));
     }
 
     @Test

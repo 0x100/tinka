@@ -16,6 +16,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import ru.tinkoff.invest.model.Candle;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,30 +31,44 @@ public class RsiIndicator implements Indicator {
 
     @Override
     public double calculate(List<Candle> candles) {
-        candles = limitCandles(candles, periodsCount + 1);
-
+        Collections.reverse(candles);
         if (candles.size() < periodsCount + 1) {
             return Double.NaN;
         }
-        double uSma = 0;
-        double dSma = 0;
+        List<Double> gains = new ArrayList<>();
+        List<Double> losses = new ArrayList<>();
 
-        for (int i = 0; i < periodsCount; i++) {
+        for (int i = candles.size() - 1; i > 0; i--) {
             double todayPrice = candles.get(i).getC();
-            double yesterdayPrice = candles.get(i + 1).getC();
+            double yesterdayPrice = candles.get(i - 1).getC();
 
             if (todayPrice - yesterdayPrice > 0) {
-                uSma += todayPrice - yesterdayPrice;
+                gains.add(todayPrice - yesterdayPrice);
+                losses.add(0d);
             } else if (todayPrice - yesterdayPrice < 0) {
-                dSma += yesterdayPrice - todayPrice;
+                losses.add(yesterdayPrice - todayPrice);
+                gains.add(0d);
+            } else {
+                gains.add(0d);
+                losses.add(0d);
             }
         }
+        double uSma = gains.stream().limit(periodsCount).reduce(0d, Double::sum) / periodsCount;
+        double dSma = losses.stream().limit(periodsCount).reduce(0d, Double::sum) / periodsCount;
 
-        if (dSma == 0) {
+        double avgU = uSma;
+        double avgD = dSma;
+
+        if (avgD == 0) {
             return 100d;
-        } else {
-            double rs = uSma / dSma;
-            return 100 - 100 / (1 + rs);
         }
+        for (int i = periodsCount; i < candles.size() - 1; i++) {
+            Double u = gains.get(i);
+            Double d = losses.get(i);
+            avgU = (avgU * (periodsCount - 1) + u) / periodsCount;
+            avgD = (avgD * (periodsCount - 1) + d) / periodsCount;
+        }
+        double rs = avgU / avgD;
+        return 100 - 100 / (1 + rs);
     }
 }
