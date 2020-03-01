@@ -2,6 +2,8 @@ package ru.ilysenko.tinka.helper;
 
 import lombok.experimental.UtilityClass;
 
+import java.util.List;
+
 import static java.lang.String.format;
 
 @UtilityClass
@@ -27,5 +29,13 @@ public class CalcHelper {
      */
     public static String differenceRate2String(double a, double b) {
         return (a < b ? "+" : "-") + format("%.02f", calcDifferenceRate(a, b)) + "%";
+    }
+
+    public static double ema(List<Double> values, int n) {
+        double result = values.stream().limit(n).reduce(0d, Double::sum) / n;
+        for (int i = n; i < values.size(); i++) {
+            result = (result * (n - 1) + values.get(i)) / n;
+        }
+        return result;
     }
 }

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static ru.ilysenko.tinka.helper.CalcHelper.ema;
+
 /**
  * Implementation of the RSI (Relative Strength Index) indicator
  */
@@ -53,13 +55,9 @@ public class RsiIndicator implements Indicator {
                 losses.add(0d);
             }
         }
-        double avgU = gains.stream().limit(periodsCount).reduce(0d, Double::sum) / periodsCount;
-        double avgD = losses.stream().limit(periodsCount).reduce(0d, Double::sum) / periodsCount;
+        double avgU = ema(gains, periodsCount);
+        double avgD = ema(losses, periodsCount);
 
-        for (int i = periodsCount; i < candles.size() - 1; i++) {
-            avgU = (avgU * (periodsCount - 1) + gains.get(i)) / periodsCount;
-            avgD = (avgD * (periodsCount - 1) + losses.get(i)) / periodsCount;
-        }
         if (avgD == 0) {
             return 100;
         }
