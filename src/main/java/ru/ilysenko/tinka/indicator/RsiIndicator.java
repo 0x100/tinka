@@ -38,9 +38,9 @@ public class RsiIndicator implements Indicator {
         List<Double> gains = new ArrayList<>();
         List<Double> losses = new ArrayList<>();
 
-        for (int i = candles.size() - 1; i > 0; i--) {
-            double todayPrice = candles.get(i).getC();
-            double yesterdayPrice = candles.get(i - 1).getC();
+        for (int i = 0; i < candles.size() - 1; i++) {
+            double todayPrice = candles.get(i + 1).getC();
+            double yesterdayPrice = candles.get(i).getC();
 
             if (todayPrice - yesterdayPrice > 0) {
                 gains.add(todayPrice - yesterdayPrice);

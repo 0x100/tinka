@@ -28,14 +28,14 @@ class RsiIndicatorTest extends IndicatorTest {
     void period2() {
         Indicator indicator = RsiIndicator.create().periodsCount(2).init();
         double result = indicator.calculate(getCandles());
-        assertEquals("39.1220", format(result));
+        assertEquals("46.5643", format(result));
     }
 
     @Test
     void period3() {
         Indicator indicator = RsiIndicator.create().periodsCount(3).init();
         double result = indicator.calculate(getCandles());
-        assertEquals("40.3540", format(result));
+        assertEquals("47.6846", format(result));
     }
 
     @Test
