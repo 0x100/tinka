@@ -30,7 +30,7 @@ import ru.tinkoff.invest.model.CandleResolution;
 import java.util.List;
 
 import static java.lang.String.format;
-import static ru.ilysenko.tinka.helper.CalcHelper.differenceRate2String;
+import static ru.ilysenko.tinka.helper.CalculationHelper.differenceRate2String;
 
 @Slf4j
 @Component

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static ru.ilysenko.tinka.helper.CalcHelper.ema;
+import static ru.ilysenko.tinka.helper.CalculationHelper.ema;
 
 /**
  * Implementation of the RSI (Relative Strength Index) indicator

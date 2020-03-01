@@ -7,7 +7,7 @@ import java.util.List;
 import static java.lang.String.format;
 
 @UtilityClass
-public class CalcHelper {
+public class CalculationHelper {
 
     /**
      * Calculate rate of difference between two numbers
@@ -31,6 +31,13 @@ public class CalcHelper {
         return (a < b ? "+" : "-") + format("%.02f", calcDifferenceRate(a, b)) + "%";
     }
 
+    /**
+     * Calculating of Exponential Moving Average (EMA)
+     *
+     * @param values values to average
+     * @param n      window length (period)
+     * @return EMA
+     */
     public static double ema(List<Double> values, int n) {
         double ema = values.stream().limit(n).reduce(0d, Double::sum) / n;
         for (int i = n; i < values.size(); i++) {
