@@ -32,17 +32,17 @@ public class CalculationHelper {
     }
 
     /**
-     * Calculating of Exponential Moving Average (EMA)
+     * Calculating of Smoothed Moving Average (SMMA)
      *
      * @param values values to average
      * @param n      window length (period)
-     * @return EMA
+     * @return SMMA
      */
-    public static double ema(List<Double> values, int n) {
-        double ema = values.stream().limit(n).reduce(0d, Double::sum) / n;
+    public static double smma(List<Double> values, int n) {
+        double smma = values.stream().limit(n).reduce(0d, Double::sum) / n;
         for (int i = n; i < values.size(); i++) {
-            ema = (ema * (n - 1) + values.get(i)) / n;
+            smma = (smma * (n - 1) + values.get(i)) / n;
         }
-        return ema;
+        return smma;
     }
 }
