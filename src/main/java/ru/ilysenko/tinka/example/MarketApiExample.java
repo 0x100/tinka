@@ -47,6 +47,10 @@ public class MarketApiExample {
     }
 
     private void example1() {
+        log.info("");
+        log.info("===Example 1===");
+        log.info("");
+
         Ticker ticker = Ticker.TESLA;
         MarketInstrument marketInstrument = marketApiHelper.getInstrument(ticker);
         List<Candle> candles = getCandles(marketInstrument.getFigi());
@@ -56,29 +60,31 @@ public class MarketApiExample {
         } else {
             Candle currentCandle = candles.get(0);
             Candle previousCandle = candles.size() > 1 ? candles.get(1) : currentCandle;
-            double currentPrice = currentCandle.getC();
+            double price = currentCandle.getC();
             double previousPrice = previousCandle.getC();
-
+            int volume = currentCandle.getV();
+            int previousVolume = previousCandle.getV();
             int lotSize = marketInstrument.getLot();
-            double moneyVolume = currentCandle.getV() * currentPrice * lotSize;
-            double previousMoneyVolume = previousCandle.getV() * previousPrice * lotSize;
+            double moneyVolume = volume * price * lotSize;
+            double previousMoneyVolume = previousVolume * previousPrice * lotSize;
 
-            log.info("");
-            log.info("===Example 1===");
-            log.info("");
             log.info("Ticker: {}", ticker.getValue());
             log.info("Name: {}", marketInstrument.getName());
             log.info("Prev price: {}", previousPrice);
             log.info("Open price: {} {}", currentCandle.getO(), differenceRate2String(previousPrice, currentCandle.getO()));
-            log.info("Current price: {} {}", currentPrice, differenceRate2String(previousPrice, currentPrice));
+            log.info("Current price: {} {}", price, differenceRate2String(previousPrice, price));
             log.info("Highest price: {} {}", currentCandle.getH(), differenceRate2String(previousPrice, currentCandle.getH()));
             log.info("Lowest price: {} {}", currentCandle.getL(), differenceRate2String(previousPrice, currentCandle.getL()));
-            log.info("Deal volume: {} {}", currentCandle.getV(), differenceRate2String(previousCandle.getV(), currentCandle.getV()));
+            log.info("Trade volume: {} {}", volume, differenceRate2String(previousVolume, volume));
             log.info("Money volume: {} {} {}", marketInstrument.getCurrency(), format("%.0f", moneyVolume), differenceRate2String(previousMoneyVolume, moneyVolume));
         }
     }
 
     private void example2() {
+        log.info("");
+        log.info("===Example 2===");
+        log.info("");
+
         Ticker ticker = Ticker.FACEBOOK;
         List<Candle> candles = getCandles(ticker);
 
@@ -88,10 +94,6 @@ public class MarketApiExample {
             Indicator rsiIndicator = RsiIndicator.create().periodsCount(8).init();
             Indicator cciIndicator = CciIndicator.create().periodsCount(13).init();
             Indicator williamsRIndicator = WilliamsRIndicator.create().periodsCount(21).init();
-
-            log.info("");
-            log.info("===Example 2===");
-            log.info("");
             log.info("Ticker: {}", ticker.getValue());
             log.info("RSI indicator: {}", format("%.2f", rsiIndicator.calculate(candles)));
             log.info("CCI indicator: {}", format("%.2f", cciIndicator.calculate(candles)));
