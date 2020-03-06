@@ -52,7 +52,7 @@ public class MarketApiExample {
         log.info("===Example 1===");
         log.info("");
 
-        Ticker ticker = Ticker.TGKBP;
+        Ticker ticker = Ticker.TESLA;
         MarketInstrument marketInstrument = marketApiHelper.getInstrument(ticker);
         List<Candle> candles = getCandles(marketInstrument.getFigi());
 
