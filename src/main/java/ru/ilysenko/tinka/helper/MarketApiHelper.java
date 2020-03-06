@@ -45,11 +45,20 @@ public class MarketApiHelper {
      * @return instrument id
      */
     public String getFigi(Ticker ticker) {
+        return getInstrument(ticker).getFigi();
+    }
+
+    /**
+     * Get market instrument info: figi, ticker, isin, minPriceIncrement, lot size, currency, name, type
+     *
+     * @param ticker {@link Ticker} value
+     * @return market instrument info
+     */
+    public MarketInstrument getInstrument(Ticker ticker) {
         return getMarketInstruments(ticker.getValue()).stream()
                 .filter(instrument -> Objects.equals(ticker.getValue(), instrument.getTicker()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Ticker not found"))
-                .getFigi();
+                .orElseThrow(() -> new RuntimeException("Ticker not found"));
     }
 
     /**

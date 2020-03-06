@@ -28,7 +28,7 @@ public class CalculationHelper {
      * @return formatted rate of difference
      */
     public static String differenceRate2String(double a, double b) {
-        return (a < b ? "+" : "-") + format("%.02f", calcDifferenceRate(a, b)) + "%";
+        return (a < b ? "+" : (a == b ? "" : "-")) + format("%.02f", calcDifferenceRate(a, b)) + "%";
     }
 
     /**

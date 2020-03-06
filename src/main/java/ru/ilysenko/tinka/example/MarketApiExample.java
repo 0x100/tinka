@@ -26,6 +26,7 @@ import ru.ilysenko.tinka.indicator.WilliamsRIndicator;
 import ru.ilysenko.tinka.model.Ticker;
 import ru.tinkoff.invest.model.Candle;
 import ru.tinkoff.invest.model.CandleResolution;
+import ru.tinkoff.invest.model.MarketInstrument;
 
 import java.util.List;
 
@@ -47,7 +48,8 @@ public class MarketApiExample {
 
     private void example1() {
         Ticker ticker = Ticker.TESLA;
-        List<Candle> candles = getCandles(ticker);
+        MarketInstrument marketInstrument = marketApiHelper.getInstrument(ticker);
+        List<Candle> candles = getCandles(marketInstrument.getFigi());
 
         if (candles.isEmpty()) {
             log.warn("Candles for {} is not found", ticker);
@@ -57,16 +59,22 @@ public class MarketApiExample {
             double currentPrice = currentCandle.getC();
             double previousPrice = previousCandle.getC();
 
+            int lotSize = marketInstrument.getLot();
+            double moneyVolume = currentCandle.getV() * currentPrice * lotSize;
+            double previousMoneyVolume = previousCandle.getV() * previousPrice * lotSize;
+
             log.info("");
             log.info("===Example 1===");
             log.info("");
             log.info("Ticker: {}", ticker.getValue());
+            log.info("Name: {}", marketInstrument.getName());
             log.info("Prev price: {}", previousPrice);
             log.info("Open price: {} {}", currentCandle.getO(), differenceRate2String(previousPrice, currentCandle.getO()));
             log.info("Current price: {} {}", currentPrice, differenceRate2String(previousPrice, currentPrice));
             log.info("Highest price: {} {}", currentCandle.getH(), differenceRate2String(previousPrice, currentCandle.getH()));
             log.info("Lowest price: {} {}", currentCandle.getL(), differenceRate2String(previousPrice, currentCandle.getL()));
-            log.info("Volume: {} {}", currentCandle.getV(), differenceRate2String(previousCandle.getV(), currentCandle.getV()));
+            log.info("Deal volume: {} {}", currentCandle.getV(), differenceRate2String(previousCandle.getV(), currentCandle.getV()));
+            log.info("Money volume: {} {} {}", marketInstrument.getCurrency(), format("%.0f", moneyVolume), differenceRate2String(previousMoneyVolume, moneyVolume));
         }
     }
 
@@ -92,11 +100,16 @@ public class MarketApiExample {
     }
 
     private List<Candle> getCandles(Ticker ticker) {
+        String figi = marketApiHelper.getFigi(ticker);
+        return getCandles(figi);
+    }
+
+    private List<Candle> getCandles(String figi) {
         OffsetDateTime now = OffsetDateTime.now();
         OffsetDateTime from = now.minusMonths(2);
         OffsetDateTime to = now;
         CandleResolution candleResolution = CandleResolution.DAY;
 
-        return marketApiHelper.getCandles(ticker, from, to, candleResolution);
+        return marketApiHelper.getCandles(figi, from, to, candleResolution);
     }
 }
