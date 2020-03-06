@@ -21,6 +21,7 @@ import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
 import ru.ilysenko.tinka.indicator.CciIndicator;
 import ru.ilysenko.tinka.indicator.Indicator;
+import ru.ilysenko.tinka.indicator.MomentumIndicator;
 import ru.ilysenko.tinka.indicator.RsiIndicator;
 import ru.ilysenko.tinka.indicator.WilliamsRIndicator;
 import ru.ilysenko.tinka.model.Ticker;
@@ -92,13 +93,16 @@ public class MarketApiExample {
         if (candles.isEmpty()) {
             log.warn("Candles for {} is not found", ticker);
         } else {
-            Indicator rsiIndicator = RsiIndicator.create().periodsCount(8).init();
-            Indicator cciIndicator = CciIndicator.create().periodsCount(13).init();
-            Indicator williamsRIndicator = WilliamsRIndicator.create().periodsCount(21).init();
+            Indicator rsiIndicator = RsiIndicator.create().periodsCount(14).init();
+            Indicator cciIndicator = CciIndicator.create().periodsCount(9).init();
+            Indicator williamsRIndicator = WilliamsRIndicator.create().periodsCount(14).init();
+            Indicator momentumIndicator = MomentumIndicator.create().periodsCount(14).init();
+
             log.info("Ticker: {}", ticker.getValue());
             log.info("RSI indicator: {}", format("%.2f", rsiIndicator.calculate(candles)));
             log.info("CCI indicator: {}", format("%.2f", cciIndicator.calculate(candles)));
             log.info("Williams %R indicator: {}", format("%.2f", williamsRIndicator.calculate(candles)));
+            log.info("Momentum indicator: {}", format("%.2f", momentumIndicator.calculate(candles)));
         }
     }
 

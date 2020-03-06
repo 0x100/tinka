@@ -42,6 +42,7 @@ Implemented technical indicators:
 - RSI (Relative Strength Index)
 - CCI (Commodity Channel Index)
 - Williams %R
+- Momentum
 
 ## Examples
 You can find examples of using the API in the `MarketApiExample` class and in tests.
