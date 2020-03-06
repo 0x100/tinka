@@ -44,7 +44,7 @@ public class MarketApiExample {
     public void execute() {
         example1();
         example2();
-        System.exit(0);
+        shutdown();
     }
 
     private void example1() {
@@ -114,5 +114,10 @@ public class MarketApiExample {
         CandleResolution candleResolution = CandleResolution.DAY;
 
         return marketApiHelper.getCandles(figi, from, to, candleResolution);
+    }
+
+    private void shutdown() {
+        log.info("");
+        System.exit(0);
     }
 }
