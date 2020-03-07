@@ -11,7 +11,7 @@ Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/
 - JDK 11
 
 ## Configuring
-Add your sandbox or exchange token in the `application.yaml`, enable or disable a `sandbox` mode:
+Set your sandbox or exchange token in the `application.yaml` config file, enable or disable a `sandbox` mode:
 
 ```
 tinkoff:

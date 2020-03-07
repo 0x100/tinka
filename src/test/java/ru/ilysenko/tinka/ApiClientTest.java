@@ -90,8 +90,8 @@ public class ApiClientTest {
 
     @Before
     public void setUp() {
-        assumeNotNull(properties.getSandboxToken());
-        assumeFalse(SANDBOX_TOKEN_STUB.equals(properties.getSandboxToken()));
+        assumeNotNull(properties.getToken());
+        assumeFalse(SANDBOX_TOKEN_STUB.equals(properties.getToken()));
     }
 
     @Test
