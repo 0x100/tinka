@@ -23,9 +23,7 @@ public class ApiClientConfiguration {
         if (Boolean.TRUE.equals(properties.getSandboxMode())) {
             String basePath = apiClient.getBasePath() + "sandbox/";
             apiClient.setBasePath(basePath);
-            apiClient.setAccessToken(properties.getSandboxToken());
-        } else {
-            apiClient.setAccessToken(properties.getExchangeToken());
         }
+        apiClient.setAccessToken(properties.getToken());
     }
 }

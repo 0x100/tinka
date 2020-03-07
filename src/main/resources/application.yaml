@@ -19,5 +19,4 @@ tinkoff:
   invest:
     client:
       sandboxMode: true
-      sandboxToken: t.123456
-      exchangeToken: t.654321
+      token: t.123456
