@@ -1,5 +1,8 @@
-server:
-  port: 8082
+tinkoff:
+  invest:
+    client:
+      sandboxMode: true
+      token: t.123456
 
 spring:
   output:
@@ -8,15 +11,12 @@ spring:
   main:
     banner-mode: off
 
+server:
+  port: 8082
+
 logging:
   level:
     ru.ilysenko.tinka: INFO
     ru.tinkoff.invest: DEBUG
   pattern:
     console: '%clr( %d{HH:mm:ss}){cyan}  %clr(%m){faint}%n'
-
-tinkoff:
-  invest:
-    client:
-      sandboxMode: true
-      token: t.123456
