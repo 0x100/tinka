@@ -20,7 +20,7 @@ import ru.tinkoff.invest.client.ApiClient;
 public class ApiClientConfiguration {
 
     public ApiClientConfiguration(ApiClient apiClient, ApiClientProperties properties) {
-        if (Boolean.TRUE.equals(properties.getUseSandbox())) {
+        if (Boolean.TRUE.equals(properties.getSandboxMode())) {
             String basePath = apiClient.getBasePath() + "sandbox/";
             apiClient.setBasePath(basePath);
             apiClient.setAccessToken(properties.getSandboxToken());

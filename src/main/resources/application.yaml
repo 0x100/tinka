@@ -18,6 +18,6 @@ logging:
 tinkoff:
   invest:
     client:
-      useSandbox: true
+      sandboxMode: true
       sandboxToken: t.123456
       exchangeToken: t.654321
