@@ -9,6 +9,10 @@ Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/
 DISCLAIMER: You may use this client only at your own risk. 
 You're yourself accept liability for any profit or loss that may arise directly or indirectly from using this client.
 
+## Requirements
+
+- JDK 8 or later
+
 ## Configuring
 Set your sandbox or exchange token in the `application.yaml` config file, enable or disable a `sandbox` mode:
 
