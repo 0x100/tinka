@@ -1,10 +1,13 @@
 # tinka
-Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/invest-openapi/rest/
+Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/invest-openapi/rest/.
 
 ###
 
 ![build](https://github.com/0x100/tinka/workflows/build/badge.svg?branch=master)
 ![compile](https://img.shields.io/github/last-commit/0x100/tinka)
+
+DISCLAIMER: You may use this client only at your own risk. 
+You're yourself accept liability for any profit or loss that may arise directly or indirectly from using this client.
 
 ## Requirements
 
