@@ -17,10 +17,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Ticker {
-    APPLE("AAPL"),
-    GOOGLE("GOOGL"),
     FACEBOOK("FB"),
-    TESLA("TSLA");
+    APPLE("AAPL"),
+    AMAZON("AMZN"),
+    NETFLIX("NFLX"),
+    GOOGLE("GOOGL"),
+    TESLA("TSLA"),
+    BOEING("BA");
 
     private String value;
 }

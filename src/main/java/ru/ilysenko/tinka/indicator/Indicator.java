@@ -14,15 +14,16 @@ package ru.ilysenko.tinka.indicator;
 import ru.tinkoff.invest.model.Candle;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public interface Indicator {
 
     double calculate(List<Candle> candles);
 
-    default List<Candle> limitCandles(List<Candle> candles, int periodsCount) {
-        return candles.stream()
-                .limit(periodsCount)
-                .collect(Collectors.toList());
-    }
+    boolean isOverbought(List<Candle> candles);
+
+    boolean isOversold(List<Candle> candles);
+
+    IndicatorState getState(List<Candle> candles);
+
+    String getStateName(List<Candle> candles);
 }

@@ -24,8 +24,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "create", buildMethodName = "init")
-public class MomentumIndicator implements Indicator {
+public class MomentumIndicator extends AbstractIndicator {
     private int periodsCount = 14;
+
+    private static final int OVERBOUGHT_THRESHOLD = 100;
+    private static final int OVERSOLD_THRESHOLD = 100;
 
     @Override
     public double calculate(List<Candle> candles) {
@@ -38,5 +41,15 @@ public class MomentumIndicator implements Indicator {
         double previousPrice = candles.get(periodsCount).getC();
 
         return currentPrice - previousPrice;
+    }
+
+    @Override
+    public int getOverboughtThreshold() {
+        return OVERBOUGHT_THRESHOLD;
+    }
+
+    @Override
+    public int getOversoldThreshold() {
+        return OVERSOLD_THRESHOLD;
     }
 }

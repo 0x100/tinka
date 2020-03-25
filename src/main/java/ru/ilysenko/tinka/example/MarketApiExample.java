@@ -87,7 +87,7 @@ public class MarketApiExample {
         log.info("===Example 2===");
         log.info("");
 
-        Ticker ticker = Ticker.FACEBOOK;
+        Ticker ticker = Ticker.NETFLIX;
         List<Candle> candles = getCandles(ticker);
 
         if (candles.isEmpty()) {
@@ -99,10 +99,10 @@ public class MarketApiExample {
             Indicator momentumIndicator = MomentumIndicator.create().periodsCount(14).init();
 
             log.info("Ticker: {}", ticker.getValue());
-            log.info("RSI indicator: {}", format("%.2f", rsiIndicator.calculate(candles)));
-            log.info("CCI indicator: {}", format("%.2f", cciIndicator.calculate(candles)));
-            log.info("Williams %R indicator: {}", format("%.2f", williamsRIndicator.calculate(candles)));
-            log.info("Momentum indicator: {}", format("%.2f", momentumIndicator.calculate(candles)));
+            log.info("RSI indicator: {} ({})", format("%.2f", rsiIndicator.calculate(candles)), rsiIndicator.getStateName(candles));
+            log.info("CCI indicator: {} ({})", format("%.2f", cciIndicator.calculate(candles)), cciIndicator.getStateName(candles));
+            log.info("Williams %R indicator: {} ({})", format("%.2f", williamsRIndicator.calculate(candles)), williamsRIndicator.getStateName(candles));
+            log.info("Momentum indicator: {} ({})", format("%.2f", momentumIndicator.calculate(candles)), momentumIndicator.getStateName(candles));
         }
     }
 

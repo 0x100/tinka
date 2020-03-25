@@ -28,8 +28,11 @@ import static ru.ilysenko.tinka.helper.CalculationHelper.smma;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "create", buildMethodName = "init")
-public class RsiIndicator implements Indicator {
+public class RsiIndicator extends AbstractIndicator {
     private int periodsCount = 14;
+
+    private static final int OVERBOUGHT_THRESHOLD = 30;
+    private static final int OVERSOLD_THRESHOLD = 70;
 
     @Override
     public double calculate(List<Candle> candles) {
@@ -63,5 +66,25 @@ public class RsiIndicator implements Indicator {
         }
         double rs = avgU / avgD;
         return 100 - 100 / (1 + rs);
+    }
+
+    @Override
+    public boolean isOverbought(List<Candle> candles) {
+        return calculate(candles) < getOverboughtThreshold();
+    }
+
+    @Override
+    public boolean isOversold(List<Candle> candles) {
+        return calculate(candles) > getOversoldThreshold();
+    }
+
+    @Override
+    public int getOverboughtThreshold() {
+        return OVERBOUGHT_THRESHOLD;
+    }
+
+    @Override
+    public int getOversoldThreshold() {
+        return OVERSOLD_THRESHOLD;
     }
 }

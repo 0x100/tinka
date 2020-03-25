@@ -24,8 +24,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "create", buildMethodName = "init")
-public class WilliamsRIndicator implements Indicator {
+public class WilliamsRIndicator extends AbstractIndicator {
     private int periodsCount = 3;
+
+    private static final int OVERBOUGHT_THRESHOLD = -20;
+    private static final int OVERSOLD_THRESHOLD = -80;
 
     @Override
     public double calculate(List<Candle> candles) {
@@ -57,5 +60,15 @@ public class WilliamsRIndicator implements Indicator {
 
     private Candle getLastCandle(List<Candle> candles) {
         return candles.get(0);
+    }
+
+    @Override
+    public int getOverboughtThreshold() {
+        return OVERBOUGHT_THRESHOLD;
+    }
+
+    @Override
+    public int getOversoldThreshold() {
+        return OVERSOLD_THRESHOLD;
     }
 }

@@ -26,8 +26,11 @@ import static java.lang.Math.abs;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "create", buildMethodName = "init")
-public class CciIndicator implements Indicator {
+public class CciIndicator extends AbstractIndicator {
     private int periodsCount = 14;
+
+    private static final int OVERBOUGHT_THRESHOLD = 100;
+    private static final int OVERSOLD_THRESHOLD = -100;
 
     @Override
     public double calculate(List<Candle> candles) {
@@ -69,5 +72,15 @@ public class CciIndicator implements Indicator {
 
     private Candle getLatestCandle(List<Candle> candles) {
         return candles.get(0);
+    }
+
+    @Override
+    public int getOverboughtThreshold() {
+        return OVERBOUGHT_THRESHOLD;
+    }
+
+    @Override
+    public int getOversoldThreshold() {
+        return OVERSOLD_THRESHOLD;
     }
 }
