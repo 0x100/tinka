@@ -1,5 +1,5 @@
 # tinka
-Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/invest-openapi/rest/.
+Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/invest-openapi/rest/
 
 ###
 
@@ -8,10 +8,6 @@ Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/
 
 DISCLAIMER: You may use this client only at your own risk. 
 You're yourself accept liability for any profit or loss that may arise directly or indirectly from using this client.
-
-## Requirements
-
-- JDK 11
 
 ## Configuring
 Set your sandbox or exchange token in the `application.yaml` config file, enable or disable a `sandbox` mode:
@@ -25,7 +21,7 @@ tinkoff:
 ```
 
 ## Build
-Run `$ mvnw clean package`
+Run `$ mvn clean package`
 
 ## API
 After compiling will be available next components (Spring):
@@ -48,7 +44,7 @@ Implemented technical indicators:
 
 ## Examples
 You can find examples of using the API in the `MarketApiExample` class and in tests.
-To run the `MarketApiExample` use the command `$ mvnw spring-boot:run` or execute the application from your IDE.
+To run the `MarketApiExample` use the command `$ mvn spring-boot:run` or execute the application from your IDE.
 
 ## Logging
 To enable logging of http requests apply this config: 
@@ -64,5 +60,5 @@ Fork the repository, make changes, write a test for your code, send me a pull re
 I will review your changes and apply them to the master branch shortly, provided they don't violate quality standards. 
 To avoid frustration, before sending a pull request please run the Maven build:
 ```
-$ mvnw clean package
+$ mvn clean package
 ```
