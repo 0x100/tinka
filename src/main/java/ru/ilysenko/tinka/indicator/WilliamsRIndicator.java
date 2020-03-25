@@ -48,14 +48,14 @@ public class WilliamsRIndicator extends AbstractIndicator {
         return candles.stream()
                 .map(Candle::getL)
                 .min(Double::compare)
-                .orElseThrow();
+                .orElseThrow(IllegalStateException::new);
     }
 
     private double getMaxHi(List<Candle> candles) {
         return candles.stream()
                 .map(Candle::getH)
                 .max(Double::compare)
-                .orElseThrow();
+                .orElseThrow(IllegalStateException::new);
     }
 
     private Candle getLastCandle(List<Candle> candles) {
