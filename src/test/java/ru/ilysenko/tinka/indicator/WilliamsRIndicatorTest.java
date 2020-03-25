@@ -14,6 +14,7 @@ package ru.ilysenko.tinka.indicator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.spy;
 
 class WilliamsRIndicatorTest extends IndicatorTest {
 
@@ -36,5 +37,19 @@ class WilliamsRIndicatorTest extends IndicatorTest {
         Indicator indicator = WilliamsRIndicator.create().periodsCount(5).init();
         double result = indicator.calculate(getCandles());
         assertEquals("-56.1427", format(result));
+    }
+
+    @Test
+    void testOverbought() {
+        testOverboughtState(-15);
+    }
+
+    @Test
+    void testOversold() {
+        testOversoldState(-95);
+    }
+
+    protected Indicator makeIndicator() {
+        return spy(WilliamsRIndicator.class);
     }
 }

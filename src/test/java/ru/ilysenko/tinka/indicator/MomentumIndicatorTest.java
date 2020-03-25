@@ -14,6 +14,7 @@ package ru.ilysenko.tinka.indicator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.spy;
 
 class MomentumIndicatorTest extends IndicatorTest {
 
@@ -36,5 +37,19 @@ class MomentumIndicatorTest extends IndicatorTest {
         Indicator indicator = MomentumIndicator.create().periodsCount(4).init();
         double result = indicator.calculate(getCandles());
         assertEquals("-0.7600", format(result));
+    }
+
+    @Test
+    void testOverbought() {
+        testOverboughtState(110);
+    }
+
+    @Test
+    void testOversold() {
+        testOversoldState(90);
+    }
+
+    protected Indicator makeIndicator() {
+        return spy(MomentumIndicator.class);
     }
 }

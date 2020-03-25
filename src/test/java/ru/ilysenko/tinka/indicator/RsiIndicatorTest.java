@@ -14,6 +14,7 @@ package ru.ilysenko.tinka.indicator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.spy;
 
 class RsiIndicatorTest extends IndicatorTest {
 
@@ -43,5 +44,19 @@ class RsiIndicatorTest extends IndicatorTest {
         Indicator indicator = RsiIndicator.create().periodsCount(4).init();
         double result = indicator.calculate(getCandles());
         assertEquals("45.0000", format(result));
+    }
+
+    @Test
+    void testOverbought() {
+        testOverboughtState(10);
+    }
+
+    @Test
+    void testOversold() {
+        testOversoldState(80);
+    }
+
+    protected Indicator makeIndicator() {
+        return spy(RsiIndicator.class);
     }
 }

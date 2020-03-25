@@ -14,10 +14,17 @@ package ru.ilysenko.tinka.indicator;
 import ru.tinkoff.invest.model.Candle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.when;
+
 abstract class IndicatorTest {
+
+    abstract Indicator makeIndicator();
 
     List<Candle> getCandles() {
         List<Candle> candles = new ArrayList<>();
@@ -30,6 +37,18 @@ abstract class IndicatorTest {
         candles.add(makeCandle(16.83, 18.66, 14.5));
         candles.add(makeCandle(18.58, 22.07, 17.54));
         return candles;
+    }
+
+    void testOverboughtState(double threshold) {
+        Indicator indicator = makeIndicator();
+        when(indicator.calculate(anyList())).thenReturn(threshold);
+        assertEquals(IndicatorState.OVERBOUGHT, indicator.getState(Collections.emptyList()));
+    }
+
+    void testOversoldState(double threshold) {
+        Indicator indicator = makeIndicator();
+        when(indicator.calculate(anyList())).thenReturn(threshold);
+        assertEquals(IndicatorState.OVERSOLD, indicator.getState(Collections.emptyList()));
     }
 
     private Candle makeCandle(double closePrice, double highestPrice, double lowestPrice) {
