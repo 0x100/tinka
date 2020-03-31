@@ -1,5 +1,6 @@
 package ru.ilysenko.tinka.indicator;
 
+import org.springframework.util.Assert;
 import ru.tinkoff.invest.model.Candle;
 
 import java.util.List;
@@ -35,6 +36,10 @@ public abstract class AbstractIndicator implements Indicator {
     public String getStateName(List<Candle> candles) {
         IndicatorState state = getState(candles);
         return state.name().toLowerCase();
+    }
+
+    protected void validate(List<Candle> candles) {
+        Assert.isTrue(candles.get(0).getTime().isAfter(candles.get(1).getTime()), "Wrong dates order");
     }
 
     List<Candle> limitCandles(List<Candle> candles, int periodsCount) {

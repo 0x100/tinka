@@ -23,7 +23,8 @@ public enum Ticker {
     NETFLIX("NFLX"),
     GOOGLE("GOOGL"),
     TESLA("TSLA"),
-    BOEING("BA");
+    BOEING("BA"),
+    BBBY("BBBY");
 
     private String value;
 }

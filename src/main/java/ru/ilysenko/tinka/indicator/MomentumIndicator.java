@@ -37,6 +37,8 @@ public class MomentumIndicator extends AbstractIndicator {
         if (candles.size() < periodsCount + 1) {
             return Double.NaN;
         }
+        validate(candles);
+
         double currentPrice = candles.get(0).getC();
         double previousPrice = candles.get(periodsCount).getC();
 

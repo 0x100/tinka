@@ -37,11 +37,30 @@ public class WilliamsRIndicator extends AbstractIndicator {
         if (candles.size() < periodsCount) {
             return Double.NaN;
         }
+        validate(candles);
+
         double maxHi = getMaxHi(candles);
         double minLo = getMinLo(candles);
         double currentPrice = getLastCandle(candles).getC();
 
         return ((currentPrice - maxHi) / (maxHi - minLo)) * 100;
+    }
+
+    @Override
+    protected void validate(List<Candle> candles) {
+        if(candles.size() > 1) {
+            super.validate(candles);
+        }
+    }
+
+    @Override
+    public int getOverboughtThreshold() {
+        return OVERBOUGHT_THRESHOLD;
+    }
+
+    @Override
+    public int getOversoldThreshold() {
+        return OVERSOLD_THRESHOLD;
     }
 
     private double getMinLo(List<Candle> candles) {
@@ -60,15 +79,5 @@ public class WilliamsRIndicator extends AbstractIndicator {
 
     private Candle getLastCandle(List<Candle> candles) {
         return candles.get(0);
-    }
-
-    @Override
-    public int getOverboughtThreshold() {
-        return OVERBOUGHT_THRESHOLD;
-    }
-
-    @Override
-    public int getOversoldThreshold() {
-        return OVERSOLD_THRESHOLD;
     }
 }

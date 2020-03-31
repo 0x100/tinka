@@ -14,6 +14,7 @@ package ru.ilysenko.tinka.indicator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 import ru.tinkoff.invest.model.Candle;
 
 import java.util.ArrayList;
@@ -31,8 +32,8 @@ import static ru.ilysenko.tinka.helper.CalculationHelper.smma;
 public class RsiIndicator extends AbstractIndicator {
     private int periodsCount = 14;
 
-    private static final int OVERBOUGHT_THRESHOLD = 30;
-    private static final int OVERSOLD_THRESHOLD = 70;
+    private static final int OVERBOUGHT_THRESHOLD = 70;
+    private static final int OVERSOLD_THRESHOLD = 30;
 
     @Override
     public double calculate(List<Candle> candles) {
@@ -40,6 +41,8 @@ public class RsiIndicator extends AbstractIndicator {
         if (candles.size() < periodsCount + 1) {
             return Double.NaN;
         }
+        validate(candles);
+
         List<Double> gains = new ArrayList<>();
         List<Double> losses = new ArrayList<>();
 
@@ -69,13 +72,8 @@ public class RsiIndicator extends AbstractIndicator {
     }
 
     @Override
-    public boolean isOverbought(List<Candle> candles) {
-        return calculate(candles) < getOverboughtThreshold();
-    }
-
-    @Override
-    public boolean isOversold(List<Candle> candles) {
-        return calculate(candles) > getOversoldThreshold();
+    protected void validate(List<Candle> candles) {
+        Assert.isTrue(candles.get(1).getTime().isAfter(candles.get(0).getTime()), "Wrong dates order");
     }
 
     @Override

@@ -53,7 +53,7 @@ public class MarketApiExample {
         log.info("===Example 1===");
         log.info("");
 
-        Ticker ticker = Ticker.TESLA;
+        Ticker ticker = Ticker.BOEING;
         MarketInstrument marketInstrument = marketApiHelper.getInstrument(ticker);
         List<Candle> candles = getCandles(marketInstrument.getFigi());
 
@@ -87,7 +87,7 @@ public class MarketApiExample {
         log.info("===Example 2===");
         log.info("");
 
-        Ticker ticker = Ticker.NETFLIX;
+        Ticker ticker = Ticker.BOEING;
         List<Candle> candles = getCandles(ticker);
 
         if (candles.isEmpty()) {

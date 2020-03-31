@@ -39,12 +39,24 @@ public class CciIndicator extends AbstractIndicator {
         if (candles.size() < periodsCount) {
             return Double.NaN;
         }
+        validate(candles);
+
         Candle latestCandle = getLatestCandle(candles);
         double typicalPrice = calcTypicalPrice(latestCandle);
         double sma = calcSma(candles);
         double mean = calcMean(candles, sma);
 
         return (typicalPrice - sma) / (.015 * mean);
+    }
+
+    @Override
+    public int getOverboughtThreshold() {
+        return OVERBOUGHT_THRESHOLD;
+    }
+
+    @Override
+    public int getOversoldThreshold() {
+        return OVERSOLD_THRESHOLD;
     }
 
     private double calcSma(List<Candle> candles) {
@@ -72,15 +84,5 @@ public class CciIndicator extends AbstractIndicator {
 
     private Candle getLatestCandle(List<Candle> candles) {
         return candles.get(0);
-    }
-
-    @Override
-    public int getOverboughtThreshold() {
-        return OVERBOUGHT_THRESHOLD;
-    }
-
-    @Override
-    public int getOversoldThreshold() {
-        return OVERSOLD_THRESHOLD;
     }
 }

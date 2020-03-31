@@ -48,12 +48,12 @@ class RsiIndicatorTest extends IndicatorTest {
 
     @Test
     void testOverbought() {
-        testOverboughtState(10);
+        testOverboughtState(80);
     }
 
     @Test
     void testOversold() {
-        testOversoldState(80);
+        testOversoldState(10);
     }
 
     protected Indicator makeIndicator() {
