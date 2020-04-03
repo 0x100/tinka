@@ -17,36 +17,31 @@ import lombok.NoArgsConstructor;
 import ru.tinkoff.invest.model.Candle;
 
 import java.util.List;
-
-import static java.lang.Math.abs;
+import java.util.stream.Collectors;
 
 /**
- * Implementation of the CCI (Commodity Channel Index) indicator
+ * Implementation of the DPO (Detrended price oscillator) indicator
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "create", buildMethodName = "init")
-public class CciIndicator extends AbstractIndicator {
+public class DpoIndicator extends AbstractIndicator {
     private int periodsCount = 14;
 
-    private static final int OVERBOUGHT_THRESHOLD = 100;
-    private static final int OVERSOLD_THRESHOLD = -100;
+    private static final double OVERBOUGHT_THRESHOLD = 0.01;
+    private static final double OVERSOLD_THRESHOLD = -0.01;
 
     @Override
     public double calculate(List<Candle> candles) {
-        candles = limitCandles(candles, periodsCount);
+        candles = limitCandles(candles, periodsCount + periodsCount / 2 + 1);
 
-        if (candles.size() < periodsCount) {
+        if (candles.size() < periodsCount + periodsCount / 2 + 1) {
             return Double.NaN;
         }
         validate(candles);
 
-        Candle latestCandle = getLatestCandle(candles);
-        double typicalPrice = calcTypicalPrice(latestCandle);
-        double sma = calcSma(candles);
-        double mean = calcMean(candles, sma);
-
-        return (typicalPrice - sma) / (.015 * mean);
+        List<Candle> candles4Sma = skipCandles(candles, periodsCount / 2 + 1);
+        return getLatestCandle(candles).getC() - sma(candles4Sma);
     }
 
     @Override
@@ -59,27 +54,13 @@ public class CciIndicator extends AbstractIndicator {
         return OVERSOLD_THRESHOLD;
     }
 
-    private double calcSma(List<Candle> candles) {
+    private double sma(List<Candle> candles) {
         double sma = 0;
         for (int i = 0; i < periodsCount; i++) {
-            sma += calcTypicalPrice(candles.get(i));
+            sma += candles.get(i).getC();
         }
         sma /= periodsCount;
         return sma;
-    }
-
-    private double calcMean(List<Candle> candles, double sma) {
-        double mean = 0;
-        for (int i = 0; i < periodsCount; i++) {
-            double typicalPrice = calcTypicalPrice(candles.get(i));
-            mean += abs(sma - typicalPrice);
-        }
-        mean /= periodsCount;
-        return mean;
-    }
-
-    private double calcTypicalPrice(Candle candle) {
-        return (candle.getH() + candle.getL() + candle.getC()) / 3;
     }
 
     private Candle getLatestCandle(List<Candle> candles) {

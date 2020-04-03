@@ -77,12 +77,12 @@ public class RsiIndicator extends AbstractIndicator {
     }
 
     @Override
-    public int getOverboughtThreshold() {
+    public double getOverboughtThreshold() {
         return OVERBOUGHT_THRESHOLD;
     }
 
     @Override
-    public int getOversoldThreshold() {
+    public double getOversoldThreshold() {
         return OVERSOLD_THRESHOLD;
     }
 }

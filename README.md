@@ -44,6 +44,7 @@ Implemented technical indicators:
 - RSI (Relative Strength Index)
 - CCI (Commodity Channel Index)
 - Williams %R
+- DPO (Detrended price oscillator)
 - Momentum
 
 ## Examples

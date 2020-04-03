@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractIndicator implements Indicator {
 
-    abstract int getOverboughtThreshold();
+    abstract double getOverboughtThreshold();
 
-    abstract int getOversoldThreshold();
+    abstract double getOversoldThreshold();
 
     @Override
     public boolean isOverbought(List<Candle> candles) {
@@ -42,9 +42,15 @@ public abstract class AbstractIndicator implements Indicator {
         Assert.isTrue(candles.get(0).getTime().isAfter(candles.get(1).getTime()), "Wrong dates order");
     }
 
-    List<Candle> limitCandles(List<Candle> candles, int periodsCount) {
+    List<Candle> limitCandles(List<Candle> candles, int count) {
         return candles.stream()
-                .limit(periodsCount)
+                .limit(count)
+                .collect(Collectors.toList());
+    }
+
+    List<Candle> skipCandles(List<Candle> candles, int count) {
+        return candles.stream()
+                .skip(count)
                 .collect(Collectors.toList());
     }
 }
