@@ -37,7 +37,8 @@ public class RsiIndicator extends AbstractIndicator {
 
     @Override
     public double calculate(List<Candle> candles) {
-        Collections.reverse(candles);
+        candles = reverse(candles);
+
         if (candles.size() < periodsCount + 1) {
             return Double.NaN;
         }
@@ -84,5 +85,11 @@ public class RsiIndicator extends AbstractIndicator {
     @Override
     public double getOversoldThreshold() {
         return OVERSOLD_THRESHOLD;
+    }
+
+    private List<Candle> reverse(List<Candle> candles) {
+        candles = new ArrayList<>(candles);
+        Collections.reverse(candles);
+        return candles;
     }
 }

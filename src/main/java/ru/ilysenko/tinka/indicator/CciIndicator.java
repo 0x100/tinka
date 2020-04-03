@@ -43,8 +43,8 @@ public class CciIndicator extends AbstractIndicator {
 
         Candle latestCandle = getLatestCandle(candles);
         double typicalPrice = calcTypicalPrice(latestCandle);
-        double sma = calcSma(candles);
-        double mean = calcMean(candles, sma);
+        double sma = sma(candles);
+        double mean = mean(candles, sma);
 
         return (typicalPrice - sma) / (.015 * mean);
     }
@@ -59,7 +59,7 @@ public class CciIndicator extends AbstractIndicator {
         return OVERSOLD_THRESHOLD;
     }
 
-    private double calcSma(List<Candle> candles) {
+    private double sma(List<Candle> candles) {
         double sma = 0;
         for (int i = 0; i < periodsCount; i++) {
             sma += calcTypicalPrice(candles.get(i));
@@ -68,7 +68,7 @@ public class CciIndicator extends AbstractIndicator {
         return sma;
     }
 
-    private double calcMean(List<Candle> candles, double sma) {
+    private double mean(List<Candle> candles, double sma) {
         double mean = 0;
         for (int i = 0; i < periodsCount; i++) {
             double typicalPrice = calcTypicalPrice(candles.get(i));

@@ -19,11 +19,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
-import ru.ilysenko.tinka.indicator.CciIndicator;
-import ru.ilysenko.tinka.indicator.Indicator;
-import ru.ilysenko.tinka.indicator.MomentumIndicator;
-import ru.ilysenko.tinka.indicator.RsiIndicator;
-import ru.ilysenko.tinka.indicator.WilliamsRIndicator;
+import ru.ilysenko.tinka.indicator.*;
 import ru.ilysenko.tinka.model.Ticker;
 import ru.tinkoff.invest.model.Candle;
 import ru.tinkoff.invest.model.CandleResolution;
@@ -53,8 +49,8 @@ public class MarketApiExample {
         log.info("===Example 1===");
         log.info("");
 
-        Ticker ticker = Ticker.BOEING;
-        MarketInstrument marketInstrument = marketApiHelper.getInstrument(ticker);
+        Ticker ticker = Ticker.TESLA;
+        MarketInstrument marketInstrument = getMarketInstrument(ticker);
         List<Candle> candles = getCandles(marketInstrument.getFigi());
 
         if (candles.isEmpty()) {
@@ -94,16 +90,23 @@ public class MarketApiExample {
             log.warn("Candles for {} is not found", ticker);
         } else {
             Indicator rsiIndicator = RsiIndicator.create().periodsCount(14).init();
-            Indicator cciIndicator = CciIndicator.create().periodsCount(9).init();
+            Indicator cciIndicator = CciIndicator.create().periodsCount(14).init();
             Indicator williamsRIndicator = WilliamsRIndicator.create().periodsCount(14).init();
+            Indicator dpoIndicator = DpoIndicator.create().periodsCount(14).init();
             Indicator momentumIndicator = MomentumIndicator.create().periodsCount(14).init();
 
             log.info("Ticker: {}", ticker.getValue());
+            log.info("Name: {}", getMarketInstrument(ticker).getName());
             log.info("RSI indicator: {} ({})", format("%.2f", rsiIndicator.calculate(candles)), rsiIndicator.getStateName(candles));
             log.info("CCI indicator: {} ({})", format("%.2f", cciIndicator.calculate(candles)), cciIndicator.getStateName(candles));
             log.info("Williams %R indicator: {} ({})", format("%.2f", williamsRIndicator.calculate(candles)), williamsRIndicator.getStateName(candles));
+            log.info("DPO indicator: {} ({})", format("%.2f", dpoIndicator.calculate(candles)), dpoIndicator.getStateName(candles));
             log.info("Momentum indicator: {} ({})", format("%.2f", momentumIndicator.calculate(candles)), momentumIndicator.getStateName(candles));
         }
+    }
+
+    private MarketInstrument getMarketInstrument(Ticker ticker) {
+        return marketApiHelper.getInstrument(ticker);
     }
 
     private List<Candle> getCandles(Ticker ticker) {
