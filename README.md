@@ -28,7 +28,7 @@ tinkoff:
 Run `$ mvn clean package`
 
 ## API
-After compiling will be available next components (Spring):
+After compiling the project next components will be available (Spring beans):
 ```
 - MarketApi
 - OperationsApi
@@ -40,7 +40,7 @@ After compiling will be available next components (Spring):
 
 ## Indicators
 
-Implemented technical indicators:
+Implemented technical indicators for using withing the API:
 - RSI (Relative Strength Index)
 - CCI (Commodity Channel Index)
 - Williams %R
