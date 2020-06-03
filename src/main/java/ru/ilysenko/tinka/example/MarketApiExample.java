@@ -21,9 +21,7 @@ import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
 import ru.ilysenko.tinka.indicator.*;
 import ru.ilysenko.tinka.model.Ticker;
-import ru.tinkoff.invest.model.Candle;
-import ru.tinkoff.invest.model.CandleResolution;
-import ru.tinkoff.invest.model.MarketInstrument;
+import ru.tinkoff.invest.model.*;
 
 import java.util.List;
 
@@ -41,6 +39,7 @@ public class MarketApiExample {
     public void execute() {
         example1();
         example2();
+        example3();
         shutdown();
     }
 
@@ -102,6 +101,30 @@ public class MarketApiExample {
             log.info("Williams %R indicator: {} ({})", format("%.2f", williamsRIndicator.calculate(candles)), williamsRIndicator.getStateName(candles));
             log.info("DPO indicator: {} ({})", format("%.2f", dpoIndicator.calculate(candles)), dpoIndicator.getStateName(candles));
             log.info("Momentum indicator: {} ({})", format("%.2f", momentumIndicator.calculate(candles)), momentumIndicator.getStateName(candles));
+        }
+    }
+
+    private void example3() {
+        log.info("");
+        log.info("===Example 3===");
+        log.info("");
+
+        Ticker ticker = Ticker.FACEBOOK;
+        MarketInstrument marketInstrument = getMarketInstrument(ticker);
+        List<Candle> candles = getCandles(marketInstrument.getFigi());
+
+        if (candles.isEmpty()) {
+            log.warn("Candles for {} is not found", ticker);
+        } else {
+            Candle currentCandle = candles.get(0);
+            double price = currentCandle.getC();
+            int orderBookDepth = 6;
+
+            Orderbook payload = marketApiHelper.getOrderBook(ticker, orderBookDepth);
+            int bidsCount = payload.getBids().stream().mapToInt(OrderResponse::getQuantity).sum();
+            int asksCount = payload.getAsks().stream().mapToInt(OrderResponse::getQuantity).sum();
+
+            log.info("Current price: {}   bids {} | asks {}", price, bidsCount, asksCount);
         }
     }
 

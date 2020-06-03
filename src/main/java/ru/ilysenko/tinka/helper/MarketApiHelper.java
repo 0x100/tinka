@@ -16,13 +16,7 @@ import org.springframework.stereotype.Component;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.model.Ticker;
 import ru.tinkoff.invest.api.MarketApi;
-import ru.tinkoff.invest.model.Candle;
-import ru.tinkoff.invest.model.CandleResolution;
-import ru.tinkoff.invest.model.Candles;
-import ru.tinkoff.invest.model.CandlesResponse;
-import ru.tinkoff.invest.model.MarketInstrument;
-import ru.tinkoff.invest.model.MarketInstrumentList;
-import ru.tinkoff.invest.model.MarketInstrumentListResponse;
+import ru.tinkoff.invest.model.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -106,6 +100,11 @@ public class MarketApiHelper {
     public List<Candle> getCandles(Ticker ticker, OffsetDateTime from, OffsetDateTime to, CandleResolution candleResolution) {
         String figi = getFigi(ticker);
         return getCandles(figi, from, to, candleResolution);
+    }
+
+    public Orderbook getOrderBook(Ticker ticker, int depth) {
+        String figi = getFigi(ticker);
+        return marketApi.marketOrderbookGet(figi, depth).getPayload();
     }
 
     private List<MarketInstrument> getMarketInstruments(String ticker) {
