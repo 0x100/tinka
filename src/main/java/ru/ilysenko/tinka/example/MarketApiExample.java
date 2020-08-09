@@ -103,7 +103,6 @@ public class MarketApiExample {
             log.info("Momentum indicator: {} ({})", format("%.2f", momentumIndicator.calculate(candles)), momentumIndicator.getStateName(candles));
         }
     }
-
     private void example3() {
         log.info("");
         log.info("===Example 3===");
