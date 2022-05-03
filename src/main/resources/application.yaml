@@ -1,7 +1,6 @@
 tinkoff:
   invest:
     client:
-      sandboxMode: true
       token: t.123456
 
 spring:

@@ -14,9 +14,12 @@ package ru.ilysenko.tinka.indicator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import ru.tinkoff.invest.model.Candle;
+import ru.ilysenko.tinka.helper.CalculationHelper;
+import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.List;
+
+import static ru.ilysenko.tinka.helper.CalculationHelper.toDouble;
 
 /**
  * Implementation of the Williams %R indicator
@@ -31,7 +34,7 @@ public class WilliamsRIndicator extends AbstractIndicator {
     private static final int OVERSOLD_THRESHOLD = -80;
 
     @Override
-    public double calculate(List<Candle> candles) {
+    public double calculate(List<V1HistoricCandle> candles) {
         candles = limitCandles(candles, periodsCount);
 
         if (candles.size() < periodsCount) {
@@ -41,14 +44,14 @@ public class WilliamsRIndicator extends AbstractIndicator {
 
         double maxHi = getMaxHi(candles);
         double minLo = getMinLo(candles);
-        double currentPrice = getLastCandle(candles).getC();
+        double currentPrice = toDouble(getLastCandle(candles).getClose());
 
         return ((currentPrice - maxHi) / (maxHi - minLo)) * 100;
     }
 
     @Override
-    protected void validate(List<Candle> candles) {
-        if(candles.size() > 1) {
+    protected void validate(List<V1HistoricCandle> candles) {
+        if (candles.size() > 1) {
             super.validate(candles);
         }
     }
@@ -63,21 +66,23 @@ public class WilliamsRIndicator extends AbstractIndicator {
         return OVERSOLD_THRESHOLD;
     }
 
-    private double getMinLo(List<Candle> candles) {
+    private double getMinLo(List<V1HistoricCandle> candles) {
         return candles.stream()
-                .map(Candle::getL)
+                .map(V1HistoricCandle::getLow)
+                .map(CalculationHelper::toDouble)
                 .min(Double::compare)
                 .orElseThrow(IllegalStateException::new);
     }
 
-    private double getMaxHi(List<Candle> candles) {
+    private double getMaxHi(List<V1HistoricCandle> candles) {
         return candles.stream()
-                .map(Candle::getH)
+                .map(V1HistoricCandle::getHigh)
+                .map(CalculationHelper::toDouble)
                 .max(Double::compare)
                 .orElseThrow(IllegalStateException::new);
     }
 
-    private Candle getLastCandle(List<Candle> candles) {
+    private V1HistoricCandle getLastCandle(List<V1HistoricCandle> candles) {
         return candles.get(0);
     }
 }

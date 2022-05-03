@@ -14,9 +14,11 @@ package ru.ilysenko.tinka.indicator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import ru.tinkoff.invest.model.Candle;
+import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.List;
+
+import static ru.ilysenko.tinka.helper.CalculationHelper.toDouble;
 
 /**
  * Implementation of the Momentum indicator
@@ -31,7 +33,7 @@ public class MomentumIndicator extends AbstractIndicator {
     private static final int OVERSOLD_THRESHOLD = 100;
 
     @Override
-    public double calculate(List<Candle> candles) {
+    public double calculate(List<V1HistoricCandle> candles) {
         candles = limitCandles(candles, periodsCount + 1);
 
         if (candles.size() < periodsCount + 1) {
@@ -39,8 +41,8 @@ public class MomentumIndicator extends AbstractIndicator {
         }
         validate(candles);
 
-        double currentPrice = candles.get(0).getC();
-        double previousPrice = candles.get(periodsCount).getC();
+        double currentPrice = toDouble(candles.get(0).getClose());
+        double previousPrice = toDouble(candles.get(periodsCount).getClose());
 
         return currentPrice - previousPrice;
     }

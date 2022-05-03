@@ -14,10 +14,11 @@ package ru.ilysenko.tinka.indicator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import ru.tinkoff.invest.model.Candle;
+import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static ru.ilysenko.tinka.helper.CalculationHelper.toDouble;
 
 /**
  * Implementation of the DPO (Detrended price oscillator) indicator
@@ -32,7 +33,7 @@ public class DpoIndicator extends AbstractIndicator {
     private static final double OVERSOLD_THRESHOLD = -0.01;
 
     @Override
-    public double calculate(List<Candle> candles) {
+    public double calculate(List<V1HistoricCandle> candles) {
         candles = limitCandles(candles, periodsCount + periodsCount / 2 + 1);
 
         if (candles.size() < periodsCount + periodsCount / 2 + 1) {
@@ -40,8 +41,8 @@ public class DpoIndicator extends AbstractIndicator {
         }
         validate(candles);
 
-        List<Candle> candles4Sma = skipCandles(candles, periodsCount / 2 + 1);
-        return getLatestCandle(candles).getC() - sma(candles4Sma);
+        List<V1HistoricCandle> candles4Sma = skipCandles(candles, periodsCount / 2 + 1);
+        return toDouble(getLatestCandle(candles).getClose()) - sma(candles4Sma);
     }
 
     @Override
@@ -54,16 +55,16 @@ public class DpoIndicator extends AbstractIndicator {
         return OVERSOLD_THRESHOLD;
     }
 
-    private double sma(List<Candle> candles) {
+    private double sma(List<V1HistoricCandle> candles) {
         double sma = 0;
         for (int i = 0; i < periodsCount; i++) {
-            sma += candles.get(i).getC();
+            sma += toDouble(candles.get(i).getClose());
         }
         sma /= periodsCount;
         return sma;
     }
 
-    private Candle getLatestCandle(List<Candle> candles) {
+    private V1HistoricCandle getLatestCandle(List<V1HistoricCandle> candles) {
         return candles.get(0);
     }
 }

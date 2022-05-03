@@ -12,13 +12,20 @@
 package ru.ilysenko.tinka.helper;
 
 import lombok.experimental.UtilityClass;
+import ru.tinkoff.invest.model.V1Quotation;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
 
 @UtilityClass
 public class CalculationHelper {
+
+    private static final int QUOTATION_SCALE = 9;
+    private static final int QUOTATION_MULTIPLIER = 1_000_000_000;
+
 
     /**
      * Calculate rate of difference between two numbers
@@ -55,5 +62,23 @@ public class CalculationHelper {
             smma = (smma * (n - 1) + values.get(i)) / n;
         }
         return smma;
+    }
+
+    public static V1Quotation toQuotation(double value) {
+        BigDecimal decimal = BigDecimal.valueOf(value);
+        return new V1Quotation()
+                .units(String.valueOf(decimal.longValue()))
+                .nano(decimal.remainder(BigDecimal.ONE).multiply(BigDecimal.valueOf(QUOTATION_MULTIPLIER)).intValue());
+    }
+
+    public static double toDouble(V1Quotation value) {
+        String units = ofNullable(value.getUnits()).orElse("0");
+        int nano = ofNullable(value.getNano()).orElse(0);
+
+        return ("0".equals(units) && nano == 0 ? BigDecimal.ZERO : getBigDecimal(units, nano)).doubleValue();
+    }
+
+    private static BigDecimal getBigDecimal(String units, int nano) {
+        return new BigDecimal(units).add(BigDecimal.valueOf(nano, QUOTATION_SCALE));
     }
 }

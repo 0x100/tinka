@@ -14,16 +14,17 @@ package ru.ilysenko.tinka.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import static ru.ilysenko.tinka.model.ClassCode.SPBXM;
+import static ru.ilysenko.tinka.model.ClassCode.TQBR;
+
 @Getter
 @AllArgsConstructor
 public enum Ticker {
-    FACEBOOK("FB"),
-    APPLE("AAPL"),
-    AMAZON("AMZN"),
-    NETFLIX("NFLX"),
-    GOOGLE("GOOGL"),
-    TESLA("TSLA"),
-    BOEING("BA");
+    APPLE("AAPL", SPBXM),
+    TESLA("TSLA", SPBXM),
+    SBER("SBER", TQBR),
+    TINKOFF("TCSG", TQBR);
 
-    private String value;
+    private final String value;
+    private final ClassCode classCode;
 }
