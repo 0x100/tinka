@@ -24,6 +24,7 @@ import org.threeten.bp.OffsetDateTime;
 import org.threeten.bp.ZonedDateTime;
 import ru.ilysenko.tinka.interceptor.LoggingRequestInterceptor;
 import ru.ilysenko.tinka.interceptor.RequestEncodingInterceptor;
+import ru.ilysenko.tinka.serializer.OffsetDateTimeSerializer;
 import ru.tinkoff.invest.client.CustomInstantDeserializer;
 
 @Configuration
@@ -52,6 +53,7 @@ public class RestConfiguration {
                     module.addDeserializer(Instant.class, CustomInstantDeserializer.INSTANT);
                     module.addDeserializer(OffsetDateTime.class, CustomInstantDeserializer.OFFSET_DATE_TIME);
                     module.addDeserializer(ZonedDateTime.class, CustomInstantDeserializer.ZONED_DATE_TIME);
+                    module.addSerializer(OffsetDateTime.class, new OffsetDateTimeSerializer());
                     m.registerModule(module);
                 });
     }

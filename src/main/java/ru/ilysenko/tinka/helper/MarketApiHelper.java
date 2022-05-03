@@ -15,12 +15,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.model.Ticker;
-import ru.tinkoff.invest.api.MarketApi;
-import ru.tinkoff.invest.model.*;
+import ru.tinkoff.invest.api.InstrumentsServiceApi;
+import ru.tinkoff.invest.api.MarketDataServiceApi;
+import ru.tinkoff.invest.model.V1CandleInterval;
+import ru.tinkoff.invest.model.V1GetCandlesRequest;
+import ru.tinkoff.invest.model.V1GetCandlesResponse;
+import ru.tinkoff.invest.model.V1GetOrderBookRequest;
+import ru.tinkoff.invest.model.V1GetOrderBookResponse;
+import ru.tinkoff.invest.model.V1HistoricCandle;
+import ru.tinkoff.invest.model.V1Instrument;
+import ru.tinkoff.invest.model.V1InstrumentIdType;
+import ru.tinkoff.invest.model.V1InstrumentRequest;
+import ru.tinkoff.invest.model.V1InstrumentResponse;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.Optional.of;
@@ -30,7 +39,8 @@ import static java.util.Optional.ofNullable;
 @RequiredArgsConstructor
 public class MarketApiHelper {
 
-    private final MarketApi marketApi;
+    private final MarketDataServiceApi marketApi;
+    private final InstrumentsServiceApi instrumentApi;
 
     /**
      * Get FIGI (instrument identifier) for a specified ticker
@@ -48,10 +58,14 @@ public class MarketApiHelper {
      * @param ticker {@link Ticker} value
      * @return market instrument info
      */
-    public MarketInstrument getInstrument(Ticker ticker) {
-        return getMarketInstruments(ticker.getValue()).stream()
-                .filter(instrument -> Objects.equals(ticker.getValue(), instrument.getTicker()))
-                .findFirst()
+    public V1Instrument getInstrument(Ticker ticker) {
+        V1InstrumentRequest request = new V1InstrumentRequest()
+                .idType(V1InstrumentIdType.TYPE_TICKER)
+                .id(ticker.getValue())
+                .classCode(ticker.getClassCode().name());
+
+        return ofNullable(instrumentApi.instrumentsServiceGetInstrumentBy(request))
+                .map(V1InstrumentResponse::getInstrument)
                 .orElseThrow(() -> new RuntimeException("Ticker not found"));
     }
 
@@ -64,24 +78,24 @@ public class MarketApiHelper {
      * @param candleResolution candle period
      * @return list of candles
      */
-    public List<Candle> getCandles(String figi, OffsetDateTime from, OffsetDateTime to, CandleResolution candleResolution) {
+    public List<V1HistoricCandle> getCandles(String figi, OffsetDateTime from, OffsetDateTime to, V1CandleInterval candleResolution) {
         return getCandles(figi, from, to, candleResolution, false);
     }
 
     /**
      * Get candles
      *
-     * @param figi             instrument id
-     * @param from             from date
-     * @param to               due date
-     * @param candleResolution candle period
+     * @param figi     instrument id
+     * @param from     from date
+     * @param to       due date
+     * @param interval candle period
      * @return list of candles
      */
-    public List<Candle> getCandles(String figi, OffsetDateTime from, OffsetDateTime to, CandleResolution candleResolution, boolean ascendingOrder) {
-        CandlesResponse response = marketApi.marketCandlesGet(figi, from, to, candleResolution);
+    public List<V1HistoricCandle> getCandles(String figi, OffsetDateTime from, OffsetDateTime to, V1CandleInterval interval, boolean ascendingOrder) {
+        V1GetCandlesRequest request = new V1GetCandlesRequest().figi(figi).from(from).to(to).interval(interval);
+        V1GetCandlesResponse response = marketApi.marketDataServiceGetCandles(request);
         return of(response)
-                .map(CandlesResponse::getPayload)
-                .map(Candles::getCandles)
+                .map(V1GetCandlesResponse::getCandles)
                 .orElse(Collections.emptyList())
                 .stream()
                 .sorted((c1, c2) -> ascendingOrder ? c1.getTime().compareTo(c2.getTime()) : c2.getTime().compareTo(c1.getTime()))
@@ -91,26 +105,26 @@ public class MarketApiHelper {
     /**
      * Get candles
      *
-     * @param ticker           ticker
-     * @param from             from date
-     * @param to               due date
-     * @param candleResolution candle period
+     * @param ticker   ticker
+     * @param from     from date
+     * @param to       due date
+     * @param interval candle period
      * @return list of candles
      */
-    public List<Candle> getCandles(Ticker ticker, OffsetDateTime from, OffsetDateTime to, CandleResolution candleResolution) {
-        String figi = getFigi(ticker);
-        return getCandles(figi, from, to, candleResolution);
+    public List<V1HistoricCandle> getCandles(Ticker ticker, OffsetDateTime from, OffsetDateTime to, V1CandleInterval interval) {
+        V1GetCandlesRequest request = new V1GetCandlesRequest();
+        request.setFigi(getFigi(ticker));
+        request.setFrom(from);
+        request.setTo(to);
+        request.setInterval(interval);
+        V1GetCandlesResponse response = marketApi.marketDataServiceGetCandles(request);
+        return response.getCandles();
     }
 
-    public Orderbook getOrderBook(Ticker ticker, int depth) {
-        String figi = getFigi(ticker);
-        return marketApi.marketOrderbookGet(figi, depth).getPayload();
-    }
-
-    private List<MarketInstrument> getMarketInstruments(String ticker) {
-        return ofNullable(marketApi.marketSearchByTickerGet(ticker))
-                .map(MarketInstrumentListResponse::getPayload)
-                .map(MarketInstrumentList::getInstruments)
-                .orElse(Collections.emptyList());
+    public V1GetOrderBookResponse getOrderBook(Ticker ticker, int depth) {
+        V1GetOrderBookRequest request = new V1GetOrderBookRequest();
+        request.setFigi(getFigi(ticker));
+        request.setDepth(depth);
+        return marketApi.marketDataServiceGetOrderBook(request);
     }
 }

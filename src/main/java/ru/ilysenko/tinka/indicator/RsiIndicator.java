@@ -14,14 +14,15 @@ package ru.ilysenko.tinka.indicator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.springframework.util.Assert;
-import ru.tinkoff.invest.model.Candle;
+import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.apache.commons.lang3.Validate.isTrue;
 import static ru.ilysenko.tinka.helper.CalculationHelper.smma;
+import static ru.ilysenko.tinka.helper.CalculationHelper.toDouble;
 
 /**
  * Implementation of the RSI (Relative Strength Index) indicator
@@ -36,7 +37,7 @@ public class RsiIndicator extends AbstractIndicator {
     private static final int OVERSOLD_THRESHOLD = 30;
 
     @Override
-    public double calculate(List<Candle> candles) {
+    public double calculate(List<V1HistoricCandle> candles) {
         candles = reverse(candles);
 
         if (candles.size() < periodsCount + 1) {
@@ -48,8 +49,8 @@ public class RsiIndicator extends AbstractIndicator {
         List<Double> losses = new ArrayList<>();
 
         for (int i = 0; i < candles.size() - 1; i++) {
-            double todayPrice = candles.get(i + 1).getC();
-            double yesterdayPrice = candles.get(i).getC();
+            double todayPrice = toDouble(candles.get(i + 1).getClose());
+            double yesterdayPrice = toDouble(candles.get(i).getClose());
 
             if (todayPrice - yesterdayPrice > 0) {
                 gains.add(todayPrice - yesterdayPrice);
@@ -73,8 +74,8 @@ public class RsiIndicator extends AbstractIndicator {
     }
 
     @Override
-    protected void validate(List<Candle> candles) {
-        Assert.isTrue(candles.get(1).getTime().isAfter(candles.get(0).getTime()), "Wrong dates order");
+    protected void validate(List<V1HistoricCandle> candles) {
+        isTrue(candles.get(1).getTime().isAfter(candles.get(0).getTime()), "Wrong dates order");
     }
 
     @Override
@@ -87,7 +88,7 @@ public class RsiIndicator extends AbstractIndicator {
         return OVERSOLD_THRESHOLD;
     }
 
-    private List<Candle> reverse(List<Candle> candles) {
+    private List<V1HistoricCandle> reverse(List<V1HistoricCandle> candles) {
         candles = new ArrayList<>(candles);
         Collections.reverse(candles);
         return candles;

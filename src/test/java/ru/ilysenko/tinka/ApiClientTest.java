@@ -12,75 +12,63 @@
 package ru.ilysenko.tinka;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.threeten.bp.OffsetDateTime;
 import ru.ilysenko.tinka.config.ApiClientProperties;
 import ru.ilysenko.tinka.helper.MarketApiHelper;
 import ru.ilysenko.tinka.model.Ticker;
-import ru.tinkoff.invest.api.MarketApi;
-import ru.tinkoff.invest.api.OperationsApi;
-import ru.tinkoff.invest.api.OrdersApi;
-import ru.tinkoff.invest.api.PortfolioApi;
-import ru.tinkoff.invest.api.SandboxApi;
-import ru.tinkoff.invest.api.UserApi;
-import ru.tinkoff.invest.model.Candle;
-import ru.tinkoff.invest.model.CandleResolution;
-import ru.tinkoff.invest.model.Candles;
-import ru.tinkoff.invest.model.CandlesResponse;
-import ru.tinkoff.invest.model.Currencies;
-import ru.tinkoff.invest.model.CurrencyPosition;
-import ru.tinkoff.invest.model.Empty;
-import ru.tinkoff.invest.model.Operations;
-import ru.tinkoff.invest.model.OperationsResponse;
-import ru.tinkoff.invest.model.Order;
-import ru.tinkoff.invest.model.OrdersResponse;
-import ru.tinkoff.invest.model.Portfolio;
-import ru.tinkoff.invest.model.PortfolioCurrenciesResponse;
-import ru.tinkoff.invest.model.PortfolioResponse;
-import ru.tinkoff.invest.model.UserAccount;
-import ru.tinkoff.invest.model.UserAccounts;
-import ru.tinkoff.invest.model.UserAccountsResponse;
+import ru.tinkoff.invest.api.InstrumentsServiceApi;
+import ru.tinkoff.invest.api.MarketDataServiceApi;
+import ru.tinkoff.invest.api.SandboxServiceApi;
+import ru.tinkoff.invest.model.V1Account;
+import ru.tinkoff.invest.model.V1CandleInterval;
+import ru.tinkoff.invest.model.V1CloseSandboxAccountRequest;
+import ru.tinkoff.invest.model.V1CurrenciesResponse;
+import ru.tinkoff.invest.model.V1Currency;
+import ru.tinkoff.invest.model.V1GetAccountsRequest;
+import ru.tinkoff.invest.model.V1GetAccountsResponse;
+import ru.tinkoff.invest.model.V1GetCandlesRequest;
+import ru.tinkoff.invest.model.V1GetCandlesResponse;
+import ru.tinkoff.invest.model.V1GetOrdersRequest;
+import ru.tinkoff.invest.model.V1GetOrdersResponse;
+import ru.tinkoff.invest.model.V1GetTradingStatusRequest;
+import ru.tinkoff.invest.model.V1GetTradingStatusResponse;
+import ru.tinkoff.invest.model.V1HistoricCandle;
+import ru.tinkoff.invest.model.V1InstrumentStatus;
+import ru.tinkoff.invest.model.V1InstrumentsRequest;
+import ru.tinkoff.invest.model.V1OpenSandboxAccountRequest;
+import ru.tinkoff.invest.model.V1Operation;
+import ru.tinkoff.invest.model.V1OperationState;
+import ru.tinkoff.invest.model.V1OperationsRequest;
+import ru.tinkoff.invest.model.V1OperationsResponse;
+import ru.tinkoff.invest.model.V1OrderState;
+import ru.tinkoff.invest.model.V1PortfolioPosition;
+import ru.tinkoff.invest.model.V1PortfolioRequest;
+import ru.tinkoff.invest.model.V1PortfolioResponse;
 
 import java.util.List;
 
-import static java.util.Optional.ofNullable;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @SpringBootTest
-@ActiveProfiles("test")
-@RunWith(SpringRunner.class)
+@EnabledIf(value = "#{'${spring.profiles.active}' == 'sandbox'}", loadContext = true)
 public class ApiClientTest {
-    private static final String SANDBOX_TOKEN_STUB = "t.123456";
 
     @Autowired
-    private MarketApi marketApi;
+    private MarketDataServiceApi marketApi;
 
     @Autowired
-    private UserApi userApi;
+    private InstrumentsServiceApi instrumentsApi;
 
     @Autowired
-    private PortfolioApi portfolioApi;
-
-    @Autowired
-    private OrdersApi ordersApi;
-
-    @Autowired
-    private OperationsApi operationsApi;
-
-    @Autowired
-    private SandboxApi sandboxApi;
+    private SandboxServiceApi sandboxApi;
 
     @Autowired
     private MarketApiHelper marketApiHelper;
@@ -88,10 +76,18 @@ public class ApiClientTest {
     @Autowired
     private ApiClientProperties properties;
 
-    @Before
-    public void setUp() {
-        assumeNotNull(properties.getToken());
-        assumeFalse(SANDBOX_TOKEN_STUB.equals(properties.getToken()));
+    private ThreadLocal<String> accountId;
+
+
+    @BeforeEach
+    public void before() {
+        assertNotNull(properties.getToken());
+        accountId = ThreadLocal.withInitial(() -> sandboxApi.sandboxServiceOpenSandboxAccount(new V1OpenSandboxAccountRequest()).getAccountId());
+    }
+
+    @AfterEach
+    public void after() {
+        sandboxApi.sandboxServiceCloseSandboxAccount(new V1CloseSandboxAccountRequest().accountId(getAccountId()));
     }
 
     @Test
@@ -105,92 +101,90 @@ public class ApiClientTest {
 
     @Test
     public void getCandles() {
-        String figi = marketApiHelper.getFigi(Ticker.GOOGLE);
-        CandlesResponse response = marketApi.marketCandlesGet(figi, OffsetDateTime.now().minusDays(10), OffsetDateTime.now(), CandleResolution.DAY);
+        String figi = marketApiHelper.getFigi(Ticker.APPLE);
+
+        OffsetDateTime now = OffsetDateTime.now();
+        V1GetCandlesRequest request = new V1GetCandlesRequest()
+                .figi(figi)
+                .from(now.minusDays(10))
+                .to(now)
+                .interval(V1CandleInterval.DAY);
+
+        V1GetCandlesResponse response = marketApi.marketDataServiceGetCandles(request);
         assertNotNull(response);
 
-        Candles payload = response.getPayload();
-        assertNotNull(payload);
-
-        List<Candle> candles = payload.getCandles();
+        List<V1HistoricCandle> candles = response.getCandles();
         assertNotNull(candles);
         assertFalse(candles.isEmpty());
     }
 
     @Test
     public void getUserAccounts() {
-        UserAccountsResponse userAccounts = userApi.userAccountsGet();
-        assertNotNull(userAccounts);
+        V1GetAccountsResponse response = sandboxApi.sandboxServiceGetSandboxAccounts(new V1GetAccountsRequest());
+        assertNotNull(response);
 
-        UserAccounts payload = userAccounts.getPayload();
-        assertNotNull(payload);
-
-        List<UserAccount> accounts = payload.getAccounts();
+        List<V1Account> accounts = response.getAccounts();
         assertNotNull(accounts);
-        assertFalse(accounts.isEmpty());
     }
 
     @Test
     public void getPortfolio() {
-        PortfolioResponse portfolio = portfolioApi.portfolioGet(getBrokerAccountId());
-        assertNotNull(portfolio);
+        V1PortfolioRequest request = new V1PortfolioRequest().accountId(getAccountId());
+        V1PortfolioResponse response = sandboxApi.sandboxServiceGetSandboxPortfolio(request);
+        assertNotNull(response);
 
-        Portfolio payload = portfolio.getPayload();
-        assertNotNull(payload);
-        assertNotNull(payload.getPositions());
+        List<V1PortfolioPosition> positions = response.getPositions();
+        assertNotNull(positions);
     }
 
     @Test
     public void getCurrencies() {
-        PortfolioCurrenciesResponse response = portfolioApi.portfolioCurrenciesGet(getBrokerAccountId());
+        V1InstrumentsRequest request = new V1InstrumentsRequest().instrumentStatus(V1InstrumentStatus.BASE);
+        V1CurrenciesResponse response = instrumentsApi.instrumentsServiceCurrencies(request);
         assertNotNull(response);
 
-        Currencies payload = response.getPayload();
-        assertNotNull(payload);
-
-        List<CurrencyPosition> currencies = payload.getCurrencies();
+        List<V1Currency> currencies = response.getInstruments();
         assertNotNull(currencies);
         assertFalse(currencies.isEmpty());
     }
 
     @Test
     public void getOrders() {
-        OrdersResponse response = ordersApi.ordersGet(getBrokerAccountId());
+        V1GetOrdersRequest request = new V1GetOrdersRequest().accountId(getAccountId());
+        V1GetOrdersResponse response = sandboxApi.sandboxServiceGetSandboxOrders(request);
         assertNotNull(response);
 
-        List<Order> payload = response.getPayload();
-        assertNotNull(payload);
+        List<V1OrderState> orders = response.getOrders();
+        assertNotNull(orders);
     }
 
     @Test
     public void getOperations() {
-        OffsetDateTime from = OffsetDateTime.now().minusMonths(1);
-        OffsetDateTime to = OffsetDateTime.now();
-        String figi = marketApiHelper.getFigi(Ticker.FACEBOOK);
-        String brokerAccountId = getBrokerAccountId();
-
-        OperationsResponse response = operationsApi.operationsGet(from, to, figi, brokerAccountId);
+        String figi = marketApiHelper.getFigi(Ticker.TESLA);
+        OffsetDateTime now = OffsetDateTime.now();
+        V1OperationsRequest request = new V1OperationsRequest()
+                .figi(figi)
+                .from(now.minusMonths(1))
+                .to(now)
+                .accountId(getAccountId())
+                .state(V1OperationState.UNSPECIFIED);
+        V1OperationsResponse response = sandboxApi.sandboxServiceGetSandboxOperations(request);
         assertNotNull(response);
 
-        Operations payload = response.getPayload();
-        assertNotNull(payload);
-        assertNotNull(payload.getOperations());
+        List<V1Operation> operations = response.getOperations();
+        assertNotNull(operations);
+        assertFalse(operations.isEmpty());
     }
 
     @Test
-    @Ignore
-    public void deleteAllPositions() {
-        Empty response = sandboxApi.sandboxClearPost(getBrokerAccountId());
-        assertEquals("Ok", response.getStatus());
+    public void getTradingStatus() {
+        String figi = "BBG000N9MNX3";
+        V1GetTradingStatusResponse response = marketApi.marketDataServiceGetTradingStatus(new V1GetTradingStatusRequest().figi(figi));
+        assertNotNull(response);
+        assertNotNull(response.getTradingStatus());
     }
 
-
-    private String getBrokerAccountId() {
-        return ofNullable(userApi.userAccountsGet())
-                .map(UserAccountsResponse::getPayload)
-                .map(UserAccounts::getAccounts)
-                .flatMap(a -> a.stream().findFirst())
-                .orElseThrow(() -> new RuntimeException("User account not found"))
-                .getBrokerAccountId();
+    private String getAccountId() {
+        return accountId.get();
     }
 }

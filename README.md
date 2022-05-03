@@ -20,7 +20,6 @@ Set your sandbox or exchange token in the `application.yaml` config file, enable
 tinkoff:
   invest:
     client:
-      sandboxMode: true
       token: t.123456
 ```
 

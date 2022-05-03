@@ -14,11 +14,12 @@ package ru.ilysenko.tinka.indicator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import ru.tinkoff.invest.model.Candle;
+import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static ru.ilysenko.tinka.helper.CalculationHelper.toDouble;
 
 /**
  * Implementation of the CCI (Commodity Channel Index) indicator
@@ -33,7 +34,7 @@ public class CciIndicator extends AbstractIndicator {
     private static final int OVERSOLD_THRESHOLD = -100;
 
     @Override
-    public double calculate(List<Candle> candles) {
+    public double calculate(List<V1HistoricCandle> candles) {
         candles = limitCandles(candles, periodsCount);
 
         if (candles.size() < periodsCount) {
@@ -41,7 +42,7 @@ public class CciIndicator extends AbstractIndicator {
         }
         validate(candles);
 
-        Candle latestCandle = getLatestCandle(candles);
+        V1HistoricCandle latestCandle = getLatestCandle(candles);
         double typicalPrice = calcTypicalPrice(latestCandle);
         double sma = sma(candles);
         double mean = mean(candles, sma);
@@ -59,7 +60,7 @@ public class CciIndicator extends AbstractIndicator {
         return OVERSOLD_THRESHOLD;
     }
 
-    private double sma(List<Candle> candles) {
+    private double sma(List<V1HistoricCandle> candles) {
         double sma = 0;
         for (int i = 0; i < periodsCount; i++) {
             sma += calcTypicalPrice(candles.get(i));
@@ -68,7 +69,7 @@ public class CciIndicator extends AbstractIndicator {
         return sma;
     }
 
-    private double mean(List<Candle> candles, double sma) {
+    private double mean(List<V1HistoricCandle> candles, double sma) {
         double mean = 0;
         for (int i = 0; i < periodsCount; i++) {
             double typicalPrice = calcTypicalPrice(candles.get(i));
@@ -78,11 +79,14 @@ public class CciIndicator extends AbstractIndicator {
         return mean;
     }
 
-    private double calcTypicalPrice(Candle candle) {
-        return (candle.getH() + candle.getL() + candle.getC()) / 3;
+    private double calcTypicalPrice(V1HistoricCandle candle) {
+        double high = toDouble(candle.getHigh());
+        double low = toDouble(candle.getLow());
+        double close = toDouble(candle.getClose());
+        return (high + low + close) / 3d;
     }
 
-    private Candle getLatestCandle(List<Candle> candles) {
+    private V1HistoricCandle getLatestCandle(List<V1HistoricCandle> candles) {
         return candles.get(0);
     }
 }

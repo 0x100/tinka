@@ -11,24 +11,25 @@
  */
 package ru.ilysenko.tinka.indicator;
 
-import org.junit.Assert;
 import org.threeten.bp.OffsetDateTime;
-import ru.tinkoff.invest.model.Candle;
+import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
+import static ru.ilysenko.tinka.helper.CalculationHelper.toQuotation;
 
 abstract class IndicatorTest {
 
     abstract Indicator makeIndicator();
 
-    List<Candle> getCandles() {
-        List<Candle> candles = new ArrayList<>();
+    List<V1HistoricCandle> getCandles() {
+        List<V1HistoricCandle> candles = new ArrayList<>();
         /*
          * First candles of the NET (Cloudflare) ticker at the month time frame (from 2019-09-01 to 2020-01-01)
          */
@@ -43,23 +44,21 @@ abstract class IndicatorTest {
     void testOverboughtState(double threshold) {
         Indicator indicator = makeIndicator();
         when(indicator.calculate(anyList())).thenReturn(threshold);
-        Assert.assertEquals(IndicatorState.OVERBOUGHT, indicator.getState(Collections.emptyList()));
+        assertEquals(IndicatorState.OVERBOUGHT, indicator.getState(Collections.emptyList()));
     }
 
     void testOversoldState(double threshold) {
         Indicator indicator = makeIndicator();
         when(indicator.calculate(anyList())).thenReturn(threshold);
-        Assert.assertEquals(IndicatorState.OVERSOLD, indicator.getState(Collections.emptyList()));
+        assertEquals(IndicatorState.OVERSOLD, indicator.getState(Collections.emptyList()));
     }
 
-    private Candle makeCandle(double closePrice, double highestPrice, double lowestPrice, String date) {
-        Candle candle = new Candle();
-        candle.setC(closePrice);
-        candle.setH(highestPrice);
-        candle.setL(lowestPrice);
-        candle.setTime(OffsetDateTime.parse(date + "T00:00:00+00:00"));
-
-        return candle;
+    private V1HistoricCandle makeCandle(double closePrice, double highestPrice, double lowestPrice, String date) {
+        return new V1HistoricCandle()
+                .close(toQuotation(closePrice))
+                .high(toQuotation(highestPrice))
+                .low(toQuotation(lowestPrice))
+                .time(OffsetDateTime.parse(date + "T00:00:00+00:00"));
     }
 
     String format(double value) {

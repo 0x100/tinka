@@ -11,19 +11,19 @@
  */
 package ru.ilysenko.tinka.indicator;
 
-import ru.tinkoff.invest.model.Candle;
+import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.List;
 
 public interface Indicator {
 
-    double calculate(List<Candle> candles);
+    double calculate(List<V1HistoricCandle> candles);
 
-    boolean isOverbought(List<Candle> candles);
+    boolean isOverbought(List<V1HistoricCandle> candles);
 
-    boolean isOversold(List<Candle> candles);
+    boolean isOversold(List<V1HistoricCandle> candles);
 
-    IndicatorState getState(List<Candle> candles);
+    IndicatorState getState(List<V1HistoricCandle> candles);
 
-    String getStateName(List<Candle> candles);
+    String getStateName(List<V1HistoricCandle> candles);
 }

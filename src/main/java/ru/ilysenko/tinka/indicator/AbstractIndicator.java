@@ -12,7 +12,7 @@
 package ru.ilysenko.tinka.indicator;
 
 import org.springframework.util.Assert;
-import ru.tinkoff.invest.model.Candle;
+import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,17 +24,17 @@ public abstract class AbstractIndicator implements Indicator {
     abstract double getOversoldThreshold();
 
     @Override
-    public boolean isOverbought(List<Candle> candles) {
+    public boolean isOverbought(List<V1HistoricCandle> candles) {
         return calculate(candles) > getOverboughtThreshold();
     }
 
     @Override
-    public boolean isOversold(List<Candle> candles) {
+    public boolean isOversold(List<V1HistoricCandle> candles) {
         return calculate(candles) < getOversoldThreshold();
     }
 
     @Override
-    public IndicatorState getState(List<Candle> candles) {
+    public IndicatorState getState(List<V1HistoricCandle> candles) {
         if (isOverbought(candles)) {
             return IndicatorState.OVERBOUGHT;
         } else if (isOversold(candles)) {
@@ -44,22 +44,22 @@ public abstract class AbstractIndicator implements Indicator {
     }
 
     @Override
-    public String getStateName(List<Candle> candles) {
+    public String getStateName(List<V1HistoricCandle> candles) {
         IndicatorState state = getState(candles);
         return state.name().toLowerCase();
     }
 
-    protected void validate(List<Candle> candles) {
+    protected void validate(List<V1HistoricCandle> candles) {
         Assert.isTrue(candles.get(0).getTime().isAfter(candles.get(1).getTime()), "Wrong dates order");
     }
 
-    List<Candle> limitCandles(List<Candle> candles, int count) {
+    List<V1HistoricCandle> limitCandles(List<V1HistoricCandle> candles, int count) {
         return candles.stream()
                 .limit(count)
                 .collect(Collectors.toList());
     }
 
-    List<Candle> skipCandles(List<Candle> candles, int count) {
+    List<V1HistoricCandle> skipCandles(List<V1HistoricCandle> candles, int count) {
         return candles.stream()
                 .skip(count)
                 .collect(Collectors.toList());

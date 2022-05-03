@@ -19,6 +19,5 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("tinkoff.invest.client")
 public class ApiClientProperties {
-    private Boolean sandboxMode;
     private String token;
 }
