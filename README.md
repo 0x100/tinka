@@ -1,5 +1,5 @@
 # tinka
-Java client for Tinkoff Invest Rest API: https://tinkoffcreditsystems.github.io/invest-openapi/rest/
+Java client for Tinkoff Invest Rest API: https://tinkoff.github.io/investAPI/swagger-ui/
 
 ###
 
@@ -29,12 +29,13 @@ Run `$ mvn clean package`
 ## API
 After compiling the project next components will be available (Spring beans):
 ```
-- MarketApi
-- OperationsApi
-- OrdersApi
-- PortfolioApi
-- SandboxApi
-- UserApi
+- InstrumentsServiceApi
+- MarketDataServiceApi
+- OperationsServiceApi
+- OrdersServiceApi
+- SandboxServiceApi
+- StopOrdersServiceApi
+- UsersServiceApi
 ```
 
 ## Indicators
