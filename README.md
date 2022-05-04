@@ -14,13 +14,13 @@ You're yourself accept liability for any profit or loss that may arise directly 
 - JDK 8 or later
 
 ## Configuring
-Set your sandbox or exchange token in the `application.yaml` config file, enable or disable a `sandbox` mode:
+Set your sandbox or exchange token in the `application.yaml` config file:
 
 ```
 tinkoff:
   invest:
     client:
-      token: t.123456
+      token: {your_token_here}
 ```
 
 ## Build
