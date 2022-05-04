@@ -11,7 +11,7 @@ You're yourself accept liability for any profit or loss that may arise directly 
 
 ## Requirements
 
-- JDK 8 or later
+- JDK 17 or later
 
 ## Configuring
 Set your sandbox or exchange token in the `application.yaml` config file:
