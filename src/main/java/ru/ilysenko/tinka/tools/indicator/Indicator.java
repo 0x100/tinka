@@ -9,8 +9,21 @@
  * When a modified version is used to provide a service over a network,  the complete source code of the modified
  * version must be made available.
  */
-package ru.ilysenko.tinka.indicator;
+package ru.ilysenko.tinka.tools.indicator;
 
-public enum IndicatorState {
-    NEUTRAL, OVERBOUGHT, OVERSOLD
+import ru.tinkoff.invest.model.V1HistoricCandle;
+
+import java.util.List;
+
+public interface Indicator {
+
+    double calculate(List<V1HistoricCandle> candles);
+
+    boolean isOverbought(List<V1HistoricCandle> candles);
+
+    boolean isOversold(List<V1HistoricCandle> candles);
+
+    IndicatorState getState(List<V1HistoricCandle> candles);
+
+    String getStateName(List<V1HistoricCandle> candles);
 }

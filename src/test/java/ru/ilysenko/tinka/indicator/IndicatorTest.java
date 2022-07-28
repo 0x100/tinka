@@ -12,6 +12,8 @@
 package ru.ilysenko.tinka.indicator;
 
 import org.threeten.bp.OffsetDateTime;
+import ru.ilysenko.tinka.tools.indicator.Indicator;
+import ru.ilysenko.tinka.tools.indicator.IndicatorState;
 import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.ArrayList;

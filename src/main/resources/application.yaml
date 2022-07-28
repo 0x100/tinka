@@ -1,7 +1,8 @@
 tinkoff:
   invest:
     client:
-      token: t.123456
+#      token: t.YIQXsKrsdjqGPJxUs-kyR-AS9UY6rV8EQNAJ2SMH8KuPzdIHuxGNMis86AT1WcL11Xmw5gP6CMINJV3rzaUHAA
+      token: t.6AkC7PZkMrpl2Hxd4aZXCLqMrmYcsPqh2jaNS3ZcnizKJ6WbzIBgMR2aNn4LTbrga7dDM0rVZldKFGRUWBouLw
 
 spring:
   output:
@@ -15,7 +16,7 @@ server:
 
 logging:
   level:
-    ru.ilysenko.tinka: INFO
-    ru.tinkoff.invest: DEBUG
+    ru.ilysenko.tinka: TRACE
+    ru.tinkoff.invest: TRACE
   pattern:
     console: '%clr( %d{HH:mm:ss}){cyan}  %clr(%m){faint}%n'

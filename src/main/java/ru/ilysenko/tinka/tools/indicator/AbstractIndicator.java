@@ -9,7 +9,7 @@
  * When a modified version is used to provide a service over a network,  the complete source code of the modified
  * version must be made available.
  */
-package ru.ilysenko.tinka.indicator;
+package ru.ilysenko.tinka.tools.indicator;
 
 import org.springframework.util.Assert;
 import ru.tinkoff.invest.model.V1HistoricCandle;

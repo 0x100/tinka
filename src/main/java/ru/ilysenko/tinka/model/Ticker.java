@@ -22,7 +22,9 @@ import static ru.ilysenko.tinka.model.ClassCode.TQBR;
 public enum Ticker {
     APPLE("AAPL", SPBXM),
     TESLA("TSLA", SPBXM),
+    ZOOM("ZM", SPBXM),
     SBER("SBER", TQBR),
+    GMNK("GMNK", TQBR),
     TINKOFF("TCSG", TQBR);
 
     private final String value;

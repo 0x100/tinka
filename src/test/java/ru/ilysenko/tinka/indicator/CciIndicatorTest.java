@@ -12,6 +12,8 @@
 package ru.ilysenko.tinka.indicator;
 
 import org.junit.jupiter.api.Test;
+import ru.ilysenko.tinka.tools.indicator.CciIndicator;
+import ru.ilysenko.tinka.tools.indicator.Indicator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;

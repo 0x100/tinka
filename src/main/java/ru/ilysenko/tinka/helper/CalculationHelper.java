@@ -12,11 +12,16 @@
 package ru.ilysenko.tinka.helper;
 
 import lombok.experimental.UtilityClass;
+import ru.ilysenko.tinka.tools.bar.Candle;
+import ru.ilysenko.tinka.tools.strategy.enums.Trend;
+import ru.tinkoff.invest.model.V1MoneyValue;
 import ru.tinkoff.invest.model.V1Quotation;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.atan;
 import static java.lang.String.format;
 import static java.util.Optional.ofNullable;
 
@@ -25,6 +30,9 @@ public class CalculationHelper {
 
     private static final int QUOTATION_SCALE = 9;
     private static final int QUOTATION_MULTIPLIER = 1_000_000_000;
+    private static final double X_AXIS_STEP = 1;
+    private static final double MIN_ANGLE_4_TREND = 20;
+    public static final double PI = 3.14159;
 
 
     /**
@@ -76,6 +84,42 @@ public class CalculationHelper {
         int nano = ofNullable(value.getNano()).orElse(0);
 
         return ("0".equals(units) && nano == 0 ? BigDecimal.ZERO : getBigDecimal(units, nano)).doubleValue();
+    }
+
+    public static double toDouble(V1MoneyValue value) {
+        String units = ofNullable(value.getUnits()).orElse("0");
+        int nano = ofNullable(value.getNano()).orElse(0);
+
+        return ("0".equals(units) && nano == 0 ? BigDecimal.ZERO : getBigDecimal(units, nano)).doubleValue();
+    }
+
+    public static double calcAngleBetweenCandles(Candle candle1, Candle candle2) {
+        double value = getDiff(candle1, candle2);
+        return atan(value) * 100;
+    }
+
+    private static double getDiff(Candle candle1, Candle candle2) {
+        double value;
+        if (candle2.getHigh() < candle1.getHigh()) {
+            value = candle2.getHigh() - candle1.getHigh();
+        } else if (candle2.getLow() > candle1.getLow()) {
+            value = candle2.getLow() - candle1.getLow();
+        } else {
+            value = candle2.getClose() - candle1.getClose();
+        }
+        return value;
+    }
+
+    public static Trend getTrend(double angle) {
+        if (abs(angle) < MIN_ANGLE_4_TREND) {
+            return Trend.FLAT;
+        }
+        if (angle > 0) {
+            return Trend.UP;
+        } else if (angle < 0) {
+            return Trend.DOWN;
+        }
+        return Trend.FLAT;
     }
 
     private static BigDecimal getBigDecimal(String units, int nano) {

@@ -9,7 +9,7 @@
  * When a modified version is used to provide a service over a network,  the complete source code of the modified
  * version must be made available.
  */
-package ru.ilysenko.tinka.indicator;
+package ru.ilysenko.tinka.tools.indicator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,31 +18,36 @@ import ru.tinkoff.invest.model.V1HistoricCandle;
 
 import java.util.List;
 
+import static java.lang.Math.abs;
 import static ru.ilysenko.tinka.helper.CalculationHelper.toDouble;
 
 /**
- * Implementation of the DPO (Detrended price oscillator) indicator
+ * Implementation of the CCI (Commodity Channel Index) indicator
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "create", buildMethodName = "init")
-public class DpoIndicator extends AbstractIndicator {
+public class CciIndicator extends AbstractIndicator {
     private int periodsCount = 14;
 
-    private static final double OVERBOUGHT_THRESHOLD = 0.01;
-    private static final double OVERSOLD_THRESHOLD = -0.01;
+    private static final int OVERBOUGHT_THRESHOLD = 100;
+    private static final int OVERSOLD_THRESHOLD = -100;
 
     @Override
     public double calculate(List<V1HistoricCandle> candles) {
-        candles = limitCandles(candles, periodsCount + periodsCount / 2 + 1);
+        candles = limitCandles(candles, periodsCount);
 
-        if (candles.size() < periodsCount + periodsCount / 2 + 1) {
+        if (candles.size() < periodsCount) {
             return Double.NaN;
         }
         validate(candles);
 
-        List<V1HistoricCandle> candles4Sma = skipCandles(candles, periodsCount / 2 + 1);
-        return toDouble(getLatestCandle(candles).getClose()) - sma(candles4Sma);
+        V1HistoricCandle latestCandle = getLatestCandle(candles);
+        double typicalPrice = calcTypicalPrice(latestCandle);
+        double sma = sma(candles);
+        double mean = mean(candles, sma);
+
+        return (typicalPrice - sma) / (.015 * mean);
     }
 
     @Override
@@ -58,10 +63,27 @@ public class DpoIndicator extends AbstractIndicator {
     private double sma(List<V1HistoricCandle> candles) {
         double sma = 0;
         for (int i = 0; i < periodsCount; i++) {
-            sma += toDouble(candles.get(i).getClose());
+            sma += calcTypicalPrice(candles.get(i));
         }
         sma /= periodsCount;
         return sma;
+    }
+
+    private double mean(List<V1HistoricCandle> candles, double sma) {
+        double mean = 0;
+        for (int i = 0; i < periodsCount; i++) {
+            double typicalPrice = calcTypicalPrice(candles.get(i));
+            mean += abs(sma - typicalPrice);
+        }
+        mean /= periodsCount;
+        return mean;
+    }
+
+    private double calcTypicalPrice(V1HistoricCandle candle) {
+        double high = toDouble(candle.getHigh());
+        double low = toDouble(candle.getLow());
+        double close = toDouble(candle.getClose());
+        return (high + low + close) / 3d;
     }
 
     private V1HistoricCandle getLatestCandle(List<V1HistoricCandle> candles) {
